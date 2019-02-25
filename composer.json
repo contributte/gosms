@@ -1,0 +1,57 @@
+{
+  "name": "contributte/gosms",
+  "description": "Full featured GoSMS.cz HTTP client for nette",
+  "keywords": ["contributte", "gosms", "nette", "sms"],
+  "type": "library",
+  "license": "MIT",
+  "homepage": "https://github.com/contributte/gosms",
+  "authors": [
+    {
+      "name": "Filip Šuška"
+    }
+  ],
+  "require": {
+    "php": ">= 7.2",
+    "ext-json": "*",
+    "guzzlehttp/psr7": "^1.4",
+    "nette/utils": "~2.4 || ~3.0"
+  },
+  "require-dev": {
+    "nette/di": "~2.4",
+    "contributte/guzzlette": "~2.1",
+    "nette/http": "~2.4.10",
+    "ninjify/qa": "^0.8.0",
+    "ninjify/nunjuck": "^0.2.0",
+    "mockery/mockery": "^1.1.0",
+    "phpstan/phpstan-shim": "^0.11",
+    "phpstan/phpstan-deprecation-rules": "^0.11",
+    "phpstan/phpstan-nette": "^0.11",
+    "phpstan/phpstan-strict-rules": "^0.11"
+  },
+  "autoload": {
+    "psr-4": {
+      "Contributte\\Gosms\\": "src"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "scripts": {
+    "qa": [
+      "linter src tests",
+      "codesniffer src tests"
+    ],
+    "tests": [
+      "tester -s -p php --colors 1 -C tests/cases"
+    ],
+    "coverage": [
+      "tester -s -p phpdbg --colors 1 -C --coverage ./coverage.xml --coverage-src ./src tests/cases"
+    ],
+    "phpstan": [
+      "vendor/bin/phpstan analyse -l max -c phpstan.neon src"
+    ]
+  },
+  "suggest": {
+    "contributte/guzzlette": "As default HttpClient",
+    "nette/http": "As session handler in AccessTokenSessionProvider"
+  }
+}
