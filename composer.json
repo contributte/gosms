@@ -53,5 +53,10 @@
   "suggest": {
     "contributte/guzzlette": "As default HttpClient",
     "nette/http": "As session handler in AccessTokenSessionProvider"
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "0.2.x-dev"
+    }
   }
 }
