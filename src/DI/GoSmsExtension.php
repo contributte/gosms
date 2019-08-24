@@ -38,13 +38,11 @@ class GoSmsExtension extends CompilerExtension
 			$config['clientSecret'],
 		]);
 
-		// HttpClient
-		$hc = $builder->addDefinition($this->prefix('httpClient'));
-		Compiler::loadDefinition($hc, $config['httpClient']);
-
-		// AccessTokenProvider
-		$atp = $builder->addDefinition($this->prefix('accessTokenProvider'));
-			Compiler::loadDefinition($atp, $config['accessTokenProvider']);
+		// HttpClient, AccessTokenProvider
+		$this->compiler->loadDefinitionsFromConfig([
+			$this->prefix('httpClient') => $config['httpClient'],
+			$this->prefix('accessTokenProvider') => $config['accessTokenProvider'],
+		]);
 
 		// Message Client
 		$builder->addDefinition($this->prefix('message'))

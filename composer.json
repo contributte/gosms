@@ -14,12 +14,12 @@
     "php": ">= 7.2",
     "ext-json": "*",
     "guzzlehttp/psr7": "^1.4",
-    "nette/utils": "~2.4 || ~3.0"
+    "nette/utils": "~3.0.0"
   },
   "require-dev": {
-    "nette/di": "~2.4",
-    "contributte/guzzlette": "~2.1",
-    "nette/http": "~2.4.10",
+    "nette/di": "~3.0.0",
+    "contributte/guzzlette": "~3.0.0",
+    "nette/caching": "~3.0.0",
     "ninjify/qa": "^0.8.0",
     "ninjify/nunjuck": "^0.2.0",
     "mockery/mockery": "^1.1.0",
@@ -52,7 +52,7 @@
   },
   "suggest": {
     "contributte/guzzlette": "As default HttpClient",
-    "nette/http": "As session handler in AccessTokenSessionProvider"
+    "nette/caching": "As cache handler in AccessTokenCacheProvider"
   },
   "extra": {
     "branch-alias": {
