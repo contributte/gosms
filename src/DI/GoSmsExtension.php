@@ -2,46 +2,47 @@
 
 namespace Contributte\Gosms\DI;
 
-use Contributte\Gosms\Auth\AccessTokenSessionProvider;
+use Contributte\Gosms\Auth\AccessTokenCacheProvider;
 use Contributte\Gosms\Client\AccountClient;
 use Contributte\Gosms\Client\MessageClient;
 use Contributte\Gosms\Config;
 use Contributte\Gosms\Http\GuzzletteClient;
-use Nette\DI\Compiler;
+use Nette;
 use Nette\DI\CompilerExtension;
 use Nette\DI\Statement;
-use Nette\Utils\Validators;
+use Nette\Schema\Expect;
+use stdClass;
 
+/**
+ * @property-read stdClass $config
+ */
 class GoSmsExtension extends CompilerExtension
 {
 
-	/** @var mixed[] */
-	private $defaults = [
-		'clientId' => null,
-		'clientSecret' => null,
-		'httpClient' => GuzzletteClient::class,
-		'accessTokenProvider' => AccessTokenSessionProvider::class,
-	];
+	public function getConfigSchema(): Nette\Schema\Schema
+	{
+		return Expect::structure([
+			'clientId' => Expect::string()->required(),
+			'clientSecret' => Expect::string()->required(),
+			'httpClient' => Expect::anyOf(Expect::string(), Expect::array(), Expect::type(Statement::class)),
+			'accessTokenProvider' => Expect::anyOf(Expect::string(), Expect::array(), Expect::type(Statement::class)),
+		]);
+	}
 
 	public function loadConfiguration(): void
 	{
-		$config = $this->validateConfig($this->defaults);
+		$config = $this->config;
 		$builder = $this->getContainerBuilder();
 
-		Validators::assertField($config, 'clientId', 'string|number');
-		Validators::assertField($config, 'clientSecret', 'string');
-		Validators::assertField($config, 'httpClient', 'string');
-		Validators::assertField($config, 'accessTokenProvider', 'string');
-
 		$configStatement = new Statement(Config::class, [
-			$config['clientId'],
-			$config['clientSecret'],
+			$config->clientId,
+			$config->clientSecret,
 		]);
 
 		// HttpClient, AccessTokenProvider
 		$this->compiler->loadDefinitionsFromConfig([
-			$this->prefix('httpClient') => $config['httpClient'],
-			$this->prefix('accessTokenProvider') => $config['accessTokenProvider'],
+			$this->prefix('httpClient') => $config->httpClient ?? GuzzletteClient::class,
+			$this->prefix('accessTokenProvider') => $config->accessTokenProvider ?? AccessTokenCacheProvider::class,
 		]);
 
 		// Message Client

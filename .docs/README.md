@@ -13,7 +13,7 @@ Create account on GoSMS.cz and copy clientId and clientSecret from administratio
 
 If you use default HTTP client, you need to install and register [guzzlette](https://github.com/contributte/guzzlette/) extension.
 
-Default AccessTokenSessionProvider uses [nette/http](https://github.com/nette/http) as its session handler; 
+GoSMS.cz access tokens are valid for 3600 seconds. Default AccessTokenCacheProvider stores them in cache using [nette/caching](https://github.com/nette/caching); 
 
 * **clientId**
 * **clientSecret**
@@ -76,7 +76,6 @@ final class SendPaymentsControl extends BaseControl
 
     public function __construct(MessageClient $messageClient)
     {
-        parent::__construct();
         $this->messageClient = $messageClient;
     }
 
@@ -109,4 +108,4 @@ final class SendPaymentsControl extends BaseControl
 We have two build in AccessToken providers;
 
 * `AccessTokenClient` - fetches and stores accessToken for 1 request
-* `AccessTokenSessionProvider` - fetches and stores accessToken in session until access token expires
+* `AccessTokenCacheProvider` - fetches and stores accessToken in cache until access token expires

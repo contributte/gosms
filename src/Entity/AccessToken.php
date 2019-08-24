@@ -31,6 +31,11 @@ final class AccessToken
 		$this->expiresAt = $expiresAt ?? new DateTimeImmutable(sprintf('+%d seconds', $expiresIn));
 	}
 
+	public function isExpired(): bool
+	{
+		return $this->expiresAt->modify('-5 minutes')->getTimestamp() < time();
+	}
+
 	public function getAccessToken(): string
 	{
 		return $this->accessToken;
@@ -66,7 +71,7 @@ final class AccessToken
 			'expiresIn' => $this->expiresIn,
 			'tokenType' => $this->tokenType,
 			'scope' => $this->scope,
-			'expiresAt' => $this->expiresAt,
+			'expiresAt' => $this->expiresAt->format(DateTimeImmutable::ATOM),
 		];
 	}
 

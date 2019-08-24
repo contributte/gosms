@@ -6,7 +6,6 @@ use Contributte\Gosms\Config;
 use Contributte\Gosms\Entity\AccessToken;
 use Contributte\Gosms\Exception\ClientException;
 use Contributte\Gosms\Http\IHttpClient;
-use DateTimeImmutable;
 use GuzzleHttp\Psr7\Request;
 use Nette\Utils\Json;
 
@@ -29,7 +28,7 @@ class AccessTokenClient implements IAccessTokenProvider
 	public function getAccessToken(Config $config): AccessToken
 	{
 		// Store AccessToken at least for one request
-		if ($this->accessToken === null || $this->accessToken->getExpiresAt()->modify('- 5 minutes') < new DateTimeImmutable()) {
+		if ($this->accessToken === null || $this->accessToken->isExpired()) {
 			$this->accessToken = $this->generateAccessToken($config);
 		}
 
