@@ -8,6 +8,6 @@ use Contributte\Gosms\Entity\AccessToken;
 interface IAccessTokenProvider
 {
 
-	public function getAccessToken(Config $config): AccessToken;
+	public function getAccessToken(Config $config): ?AccessToken;
 
 }

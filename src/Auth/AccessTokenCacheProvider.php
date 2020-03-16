@@ -26,7 +26,7 @@ class AccessTokenCacheProvider extends AccessTokenClient
 		$this->cache = new Cache($storage, self::CACHE_NAMESPACE);
 	}
 
-	public function getAccessToken(Config $config): AccessToken
+	public function getAccessToken(Config $config): ?AccessToken
 	{
 		$token = $this->accessToken;
 
@@ -36,6 +36,10 @@ class AccessTokenCacheProvider extends AccessTokenClient
 		}
 
 		$this->accessToken = parent::getAccessToken($config);
+
+		if ($this->accessToken === null) {
+			return $this->accessToken;
+		}
 
 		if ($token === null || $token->getAccessToken() !== $this->accessToken->getAccessToken()) {
 			$this->saveAccessToken($config, $this->accessToken);

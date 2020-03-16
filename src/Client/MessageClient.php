@@ -23,7 +23,11 @@ class MessageClient extends AbstractClient
 		$this->assertResponse($response, 201);
 
 		$res = Json::decode($response->getBody()->getContents());
-		$res->parsedId = str_replace('messages/', '', Strings::match($res->link, '~messages/\d+~')[0]);
+
+		$res->parsedId = $res->link;
+		if (isset(Strings::match($res->link, '~messages/\d+~')[0])) {
+			$res->parseId = str_replace('messages/', '', Strings::match($res->link, '~messages/\d+~')[0]);
+		}
 
 		return $res;
 	}

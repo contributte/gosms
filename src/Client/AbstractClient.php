@@ -33,7 +33,9 @@ abstract class AbstractClient
 	protected function doRequest(RequestInterface $request): ResponseInterface
 	{
 		$token = $this->accessTokenProvider->getAccessToken($this->config);
-		$request = $request->withHeader('Authorization', 'Bearer ' . $token->getAccessToken());
+		if ($token instanceof \Contributte\Gosms\Entity\AccessToken) {
+			$request = $request->withHeader('Authorization', 'Bearer ' . $token->getAccessToken());
+		}
 
 		return $this->client->sendRequest($request);
 	}
