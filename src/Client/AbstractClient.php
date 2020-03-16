@@ -4,6 +4,7 @@ namespace Contributte\Gosms\Client;
 
 use Contributte\Gosms\Auth\IAccessTokenProvider;
 use Contributte\Gosms\Config;
+use Contributte\Gosms\Entity\AccessToken;
 use Contributte\Gosms\Exception\ClientException;
 use Contributte\Gosms\Http\IHttpClient;
 use Psr\Http\Message\RequestInterface;
@@ -33,7 +34,7 @@ abstract class AbstractClient
 	protected function doRequest(RequestInterface $request): ResponseInterface
 	{
 		$token = $this->accessTokenProvider->getAccessToken($this->config);
-		if ($token instanceof \Contributte\Gosms\Entity\AccessToken) {
+		if ($token instanceof AccessToken) {
 			$request = $request->withHeader('Authorization', 'Bearer ' . $token->getAccessToken());
 		}
 

@@ -51,7 +51,9 @@ class AccessTokenCacheProvider extends AccessTokenClient
 	private function loadAccessToken(Config $config): ?AccessToken
 	{
 		$token = $this->cache->load($config->getClientId());
-		if ($token === null) return null;
+		if ($token === null) {
+			return null;
+		}
 
 		/** @var DateTimeImmutable $expiresAt */
 		$expiresAt = DateTimeImmutable::createFromFormat(DateTimeImmutable::ATOM, $token['expiresAt']);
