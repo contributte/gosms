@@ -62,16 +62,30 @@ final class AccessToken
 	}
 
 	/**
+	 * @param mixed[] $data
+	 */
+	public static function fromArray(array $data): self
+	{
+		return new self(
+			$data['access_token'],
+			$data['expires_in'],
+			$data['token_type'],
+			$data['scope'],
+			$data['expires_at'] ?? null
+		);
+	}
+
+	/**
 	 * @return mixed[]
 	 */
 	public function toArray(): array
 	{
 		return [
-			'accessToken' => $this->accessToken,
-			'expiresIn' => $this->expiresIn,
-			'tokenType' => $this->tokenType,
+			'access_token' => $this->accessToken,
+			'expires_in' => $this->expiresIn,
+			'token_type' => $this->tokenType,
 			'scope' => $this->scope,
-			'expiresAt' => $this->expiresAt->format(DateTimeImmutable::ATOM),
+			'expires_at' => $this->expiresAt->format(DateTimeImmutable::ATOM),
 		];
 	}
 

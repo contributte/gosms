@@ -14,7 +14,7 @@ class AccessTokenCacheProvider extends AccessTokenClient
 
 	private const CACHE_NAMESPACE = 'Contributte/Gosms';
 
-	/** @var AccessToken */
+	/** @var AccessToken|null */
 	protected $accessToken;
 
 	/** @var Cache */
@@ -28,24 +28,22 @@ class AccessTokenCacheProvider extends AccessTokenClient
 
 	public function getAccessToken(Config $config): AccessToken
 	{
-		$token = $this->accessToken;
-
-		// If we have it in cache we retrieve it
-		if ($this->accessToken === null) {
-			$token = $this->loadAccessToken($config);
+		// We have token
+		if ($this->accessToken !== null && !$this->accessToken->isExpired()) {
+			return $this->accessToken;
 		}
 
-		if ($token instanceof AccessToken) {
-			$this->accessToken = $token;
+		// Load token from cache
+		$token = $this->loadAccessToken($config);
+		if ($token !== null && !$token->isExpired()) {
+			return $this->accessToken = $token;
 		}
 
-		$this->accessToken = parent::getAccessToken($config);
+		// We need to request token
+		$token = parent::getAccessToken($config);
+		$this->saveAccessToken($config, $token);
 
-		if ($token === null || $token->getAccessToken() !== $this->accessToken->getAccessToken()) {
-			$this->saveAccessToken($config, $this->accessToken);
-		}
-
-		return $this->accessToken;
+		return $this->accessToken = $token;
 	}
 
 	private function loadAccessToken(Config $config): ?AccessToken
@@ -55,16 +53,9 @@ class AccessTokenCacheProvider extends AccessTokenClient
 			return null;
 		}
 
-		/** @var DateTimeImmutable $expiresAt */
-		$expiresAt = DateTimeImmutable::createFromFormat(DateTimeImmutable::ATOM, $token['expiresAt']);
+		$token['expires_at'] = DateTimeImmutable::createFromFormat(DateTimeImmutable::ATOM, $token['expires_at']);
 
-		return new AccessToken(
-			$token['accessToken'],
-			$token['expiresIn'],
-			$token['tokenType'],
-			$token['scope'],
-			$expiresAt
-		);
+		 return AccessToken::fromArray($token);
 	}
 
 	private function saveAccessToken(Config $config, AccessToken $token): void
