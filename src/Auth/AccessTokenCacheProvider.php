@@ -14,7 +14,7 @@ class AccessTokenCacheProvider extends AccessTokenClient
 
 	private const CACHE_NAMESPACE = 'Contributte/Gosms';
 
-	/** @var AccessToken|null */
+	/** @var AccessToken */
 	protected $accessToken;
 
 	/** @var Cache */
@@ -32,7 +32,11 @@ class AccessTokenCacheProvider extends AccessTokenClient
 
 		// If we have it in cache we retrieve it
 		if ($this->accessToken === null) {
-			$token = $this->accessToken = $this->loadAccessToken($config);
+			$token = $this->loadAccessToken($config);
+		}
+
+		if ($token instanceof AccessToken) {
+			$this->accessToken = $token;
 		}
 
 		$this->accessToken = parent::getAccessToken($config);
@@ -47,7 +51,9 @@ class AccessTokenCacheProvider extends AccessTokenClient
 	private function loadAccessToken(Config $config): ?AccessToken
 	{
 		$token = $this->cache->load($config->getClientId());
-		if ($token === null) return null;
+		if ($token === null) {
+			return null;
+		}
 
 		/** @var DateTimeImmutable $expiresAt */
 		$expiresAt = DateTimeImmutable::createFromFormat(DateTimeImmutable::ATOM, $token['expiresAt']);
