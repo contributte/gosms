@@ -14,7 +14,7 @@ class AccessTokenClient implements IAccessTokenProvider
 
 	protected const URL = 'https://app.gosms.cz/oauth/v2/token';
 
-	/** @var AccessToken */
+	/** @var AccessToken|null */
 	protected $accessToken;
 
 	/** @var IHttpClient */
@@ -47,14 +47,9 @@ class AccessTokenClient implements IAccessTokenProvider
 			throw new ClientException($response->getBody()->getContents(), $response->getStatusCode());
 		}
 
-		$data = Json::decode($response->getBody()->getContents());
+		$data = Json::decode($response->getBody()->getContents(), Json::FORCE_ARRAY);
 
-		return new AccessToken(
-			$data->access_token,
-			$data->expires_in,
-			$data->token_type,
-			$data->scope
-		);
+		return AccessToken::fromArray($data);
 	}
 
 }
