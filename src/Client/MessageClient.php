@@ -24,7 +24,7 @@ class MessageClient extends AbstractClient
 
 		$res = Json::decode($response->getBody()->getContents());
 
-		$res->parseId = str_replace('messages/', '', Strings::match($res->link, '~messages/\d+~')[0] ?? '');
+		$res->parsedId = str_replace('messages/', '', Strings::match($res->link, '~messages/\d+~')[0] ?? '');
 
 		return $res;
 	}
