@@ -4,7 +4,6 @@ namespace Contributte\Gosms\Client;
 
 use Contributte\Gosms\Auth\IAccessTokenProvider;
 use Contributte\Gosms\Config;
-use Contributte\Gosms\Entity\AccessToken;
 use Contributte\Gosms\Exception\ClientException;
 use Contributte\Gosms\Http\IHttpClient;
 use Psr\Http\Message\RequestInterface;
