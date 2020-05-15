@@ -14,7 +14,7 @@ class AccessTokenClient implements IAccessTokenProvider
 
 	protected const URL = 'https://app.gosms.cz/oauth/v2/token';
 
-	/** @var AccessToken|null */
+	/** @var AccessToken */
 	protected $accessToken;
 
 	/** @var IHttpClient */
@@ -25,7 +25,7 @@ class AccessTokenClient implements IAccessTokenProvider
 		$this->client = $client;
 	}
 
-	public function getAccessToken(Config $config): ?AccessToken
+	public function getAccessToken(Config $config): AccessToken
 	{
 		// Store AccessToken at least for one request
 		if ($this->accessToken === null || $this->accessToken->isExpired()) {
