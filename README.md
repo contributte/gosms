@@ -19,7 +19,7 @@ Easy-to-use [GoSMS.cz](https://gosms.cz) API integration for [`Nette Framework`]
 ## Install
 
 ```
-composer require contributte/gosms
+$ composer require contributte/gosms
 ```
 
 ## Versions
