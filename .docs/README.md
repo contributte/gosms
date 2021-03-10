@@ -13,7 +13,7 @@ Create account on GoSMS.cz and copy clientId and clientSecret from administratio
 
 If you use default HTTP client, you need to install and register [guzzlette](https://github.com/contributte/guzzlette/) extension.
 
-GoSMS.cz access tokens are valid for 3600 seconds. Default AccessTokenCacheProvider stores them in cache using [nette/caching](https://github.com/nette/caching); 
+GoSMS.cz access tokens are valid for 3600 seconds. Default AccessTokenCacheProvider stores them in cache using [nette/caching](https://github.com/nette/caching);
 
 * **clientId**
 * **clientSecret**
@@ -23,19 +23,19 @@ GoSMS.cz access tokens are valid for 3600 seconds. Default AccessTokenCacheProvi
 
 ## Installation
 
-```yaml
+```neon
 extensions:
-    guzzlette: Contributte\Guzzlette\DI\GuzzleExtension # optional for default HTTP client
-    gosms: App\Model\GoSMS\DI\GoSmsExtension
-    
+	guzzlette: Contributte\Guzzlette\DI\GuzzleExtension # optional for default HTTP client
+	gosms: App\Model\GoSMS\DI\GoSmsExtension
+
 gosms:
-    # Required
-    clientId: 10185_2jz2pog5jtgkocs0oc0008kow8kkwsccsk8c8ogogggs44cskg
-    clientSecret: caajrzi80zs4cwgg8400swwo8wgc4kook0s8s48kw8s00sgws
-    
-    # Optional
-    httpClient:
-    accessTokenProvider:
+	# Required
+	clientId: 10185_2jz2pog5jtgkocs0oc0008kow8kkwsccsk8c8ogogggs44cskg
+	clientSecret: caajrzi80zs4cwgg8400swwo8wgc4kook0s8s48kw8s00sgws
+
+	# Optional
+	httpClient:
+	accessTokenProvider:
 ```
 
 
@@ -71,37 +71,35 @@ use Contributte\Gosms\Exception\ClientException;
 final class SendPaymentsControl extends BaseControl
 {
 
-    /** @var MessageClient */
-    private $messageClient;
+	/** @var MessageClient */
+	private $messageClient;
 
-    public function __construct(MessageClient $messageClient)
-    {
-        $this->messageClient = $messageClient;
-    }
+	public function __construct(MessageClient $messageClient)
+	{
+		$this->messageClient = $messageClient;
+	}
 
-    public function handleSend(): void
-    {
-    	$result = NULL;
-        $msg = new Message('Message body', ['+420711555444'], 1);
-        
-        try {
-            $result = $this->messageClient->send($msg);
-        } catch (ClientException $e) {
-        	// Response status
-        	$e->getCode();
-        	// Response body
-        	$e->getMessage();
-        	exit;
-        }
+	public function handleSend(): void
+	{
+		$result = NULL;
+		$msg = new Message('Message body', ['+420711555444'], 1);
 
-        // Process successful result as you like
-        $this->saveSentMessage($result->parsedId, $msg);
-    }
+		try {
+			$result = $this->messageClient->send($msg);
+		} catch (ClientException $e) {
+			// Response status
+			$e->getCode();
+			// Response body
+			$e->getMessage();
+			exit;
+		}
+
+		// Process successful result as you like
+		$this->saveSentMessage($result->parsedId, $msg);
+	}
 
 }
-
 ```
-
 
 ### AccessTokenProvider
 
