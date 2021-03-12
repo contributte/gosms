@@ -1,6 +1,6 @@
 # GoSMS.cz Api Integration
 
-Easy-to-use [GoSMS.cz](https://gosms.cz) API integration for [`Nette Framework`](https://github.com/nette/).
+Easy-to-use [GoSMS.cz](https://gosms.eu) API integration for [`Nette Framework`](https://github.com/nette/).
 
 -----
 
@@ -18,7 +18,7 @@ Easy-to-use [GoSMS.cz](https://gosms.cz) API integration for [`Nette Framework`]
 
 ## Install
 
-```
+```bash
 composer require contributte/gosms
 ```
 
