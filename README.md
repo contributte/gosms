@@ -1,26 +1,34 @@
-# GoSMS.cz Api Integration
+![](https://heatbadger.now.sh/github/readme/contributte/gosms/)
 
-Easy-to-use [GoSMS.cz](https://gosms.eu) API integration for [`Nette Framework`](https://github.com/nette/).
+<p align=center>
+  <a href="https://github.com/contributte/gosms/actions"><img src="https://badgen.net/github/checks/contributte/gosms/master"></a>
+  <a href="https://coveralls.io/r/contributte/gosms"><img src="https://badgen.net/coveralls/c/github/contributte/gosms"></a>
+  <a href="https://packagist.org/packages/contributte/gosms"><img src="https://badgen.net/packagist/dm/contributte/gosms"></a>
+  <a href="https://packagist.org/packages/contributte/gosms"><img src="https://badgen.net/packagist/v/contributte/gosms"></a>
+</p>
+<p align=center>
+  <a href="https://packagist.org/packages/contributte/gosms"><img src="https://badgen.net/packagist/php/contributte/gosms"></a>
+  <a href="https://github.com/contributte/gosms"><img src="https://badgen.net/github/license/contributte/gosms"></a>
+  <a href="https://bit.ly/ctteg"><img src="https://badgen.net/badge/support/gitter/cyan"></a>
+  <a href="https://bit.ly/cttfo"><img src="https://badgen.net/badge/support/forum/yellow"></a>
+  <a href="https://contributte.org/partners.html"><img src="https://badgen.net/badge/sponsor/donations/F96854"></a>
+</p>
 
------
+<p align=center>
+Website 🚀 <a href="https://contributte.org">contributte.org</a> | Contact 👨🏻‍💻 <a href="https://f3l1x.io">f3l1x.io</a> | Twitter 🐦 <a href="https://twitter.com/contributte">@contributte</a>
+</p>
 
-[![Build Status](https://img.shields.io/travis/contributte/gosms.svg?style=flat-square)](https://travis-ci.org/contributte/gosms)
-[![Code coverage](https://img.shields.io/coveralls/contributte/gosms.svg?style=flat-square)](https://coveralls.io/r/contributte/gosms)
-[![Licence](https://img.shields.io/packagist/l/contributte/gosms.svg?style=flat-square)](https://packagist.org/packages/contributte/gosms)
-[![Downloads this Month](https://img.shields.io/packagist/dm/contributte/gosms.svg?style=flat-square)](https://packagist.org/packages/contributte/gosms)
-[![Downloads total](https://img.shields.io/packagist/dt/contributte/gosms.svg?style=flat-square)](https://packagist.org/packages/contributte/gosms)
-[![Latest stable](https://img.shields.io/packagist/v/contributte/gosms.svg?style=flat-square)](https://packagist.org/packages/contributte/gosms)
-[![PHPStan](https://img.shields.io/badge/PHPStan-enabled-brightgreen.svg?style=flat)](https://github.com/phpstan/phpstan)
+## Usage
 
-## Discussion / Help
-
-[![Join the chat](https://img.shields.io/gitter/room/contributte/contributte.svg?style=flat-square)](http://bit.ly/ctteg)
-
-## Install
+To install the latest version of `contributte/gosms` use [Composer](https://getcomposer.org).
 
 ```bash
 composer require contributte/gosms
 ```
+
+## Documentation
+
+For details on how to use this package, check out our [documentation](.docs).
 
 ## Versions
 
@@ -29,35 +37,21 @@ composer require contributte/gosms
 | dev         | `^0.4`  | `master` | `>= 7.2` |
 | stable      | `^0.3`  | `master` | `>= 7.2` |
 
-## Overview
+## Development
 
-- [Requirements - what do do you need](https://github.com/contributte/gosms/blob/master/.docs/README.md#requirements)
-- [Installation - how to register an extension](https://github.com/contributte/gosms/blob/master/.docs/README.md#Installation)
-- [Usage - how to use it](https://github.com/contributte/gosms/blob/master/.docs/README.md#usage)
+See [how to contribute](https://contributte.org/contributing.html) to this package.
 
-## Maintainers
+This package is currently maintaining by these authors.
 
-<table>
-  <tbody>
-    <tr>
-      <td align="center">
-        <a href="https://github.com/f3l1x">
-            <img width="150" height="150" src="https://avatars2.githubusercontent.com/u/538058?v=3&s=150">
-        </a>
-        </br>
-        <a href="https://github.com/f3l1x">Milan Felix Šulc</a>
-      </td>
-      <td align="center">
-        <a href="https://github.com/Vody105">
-            <img width="150" height="150" src="https://avatars2.githubusercontent.com/u/22433893?v=3&s=150">
-        </a>
-        </br>
-        <a href="https://github.com/Vody105">Filip Šuška</a>
-      </td>
-    </tr>
-  </tbody>
-</table>
+<a href="https://github.com/f3l1x">
+  <img width="80" height="80" src="https://avatars2.githubusercontent.com/u/538058?v=3&s=80">
+</a>
+
+<a href="https://github.com/Vody105">
+  <img width="80" height="80" src="https://avatars2.githubusercontent.com/u/22433893?v=3&s=80">
+</a>
 
 -----
 
-Thank you for testing, reporting and contributing.
+Consider to [support](https://contributte.org/partners.html) **contributte** development team.
+Also thank you for using this package.
