@@ -1,7 +1,12 @@
 {
   "name": "contributte/gosms",
   "description": "Full featured GoSMS.cz HTTP client for nette",
-  "keywords": ["contributte", "gosms", "nette", "sms"],
+  "keywords": [
+    "contributte",
+    "gosms",
+    "nette",
+    "sms"
+  ],
   "type": "library",
   "license": "MIT",
   "homepage": "https://github.com/contributte/gosms",
