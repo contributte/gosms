@@ -33,7 +33,7 @@ final class AccessToken
 
 	public function isExpired(): bool
 	{
-		return $this->expiresAt->modify('-5 minutes')->getTimestamp() < time();
+		return $this->expiresAt->modify('-30 seconds')->getTimestamp() < time();
 	}
 
 	public function getAccessToken(): string
@@ -78,7 +78,7 @@ final class AccessToken
 	/**
 	 * @return array{access_token: string, expires_in: int, token_type: string, scope: string, expires_at: string}
 	 */
-	public function toArray(): array
+	public function __serialize(): array
 	{
 		return [
 			'access_token' => $this->accessToken,
@@ -87,6 +87,18 @@ final class AccessToken
 			'scope' => $this->scope,
 			'expires_at' => $this->expiresAt->format(DateTimeImmutable::ATOM),
 		];
+	}
+
+	/**
+	 * @param array{access_token: string, expires_in: int, token_type: string, scope: string, expires_at: string} $data
+	 */
+	public function __unserialize(array $data): void
+	{
+		$this->accessToken = $data['access_token'];
+		$this->expiresIn = $data['expires_in'];
+		$this->tokenType = $data['token_type'];
+		$this->scope = $data['scope'];
+		$this->expiresAt = new DateTimeImmutable($data['expires_at']);
 	}
 
 }

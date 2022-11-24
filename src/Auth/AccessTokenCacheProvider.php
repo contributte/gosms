@@ -4,8 +4,8 @@ namespace Contributte\Gosms\Auth;
 
 use Contributte\Gosms\Config;
 use Contributte\Gosms\Entity\AccessToken;
+use Contributte\Gosms\Exception\RuntimeException;
 use Contributte\Gosms\Http\IHttpClient;
-use DateTimeImmutable;
 use Nette\Caching\Cache;
 use Nette\Caching\Storage;
 
@@ -13,9 +13,6 @@ class AccessTokenCacheProvider extends AccessTokenClient
 {
 
 	private const CACHE_NAMESPACE = 'Contributte/Gosms';
-
-	/** @var AccessToken|null */
-	protected $accessToken;
 
 	/** @var Cache */
 	protected $cache;
@@ -26,45 +23,32 @@ class AccessTokenCacheProvider extends AccessTokenClient
 		$this->cache = new Cache($storage, self::CACHE_NAMESPACE);
 	}
 
-	public function getAccessToken(Config $config): AccessToken
+	protected function generateAccessToken(Config $config): AccessToken
 	{
-		// We have token
-		if ($this->accessToken !== null && !$this->accessToken->isExpired()) {
-			return $this->accessToken;
+		$accessToken = null; // phpstan
+		for ($i = 0; $i < 2; ++$i) {
+			$accessToken = $this->cache->load($config->getClientId(), function (&$dependecies) use ($config): AccessToken {
+				$token = parent::generateAccessToken($config);
+				$dependecies[Cache::EXPIRE] = $token->getExpiresAt()->getTimestamp();
+
+				return $token;
+			});
+			assert($accessToken instanceof AccessToken);
+
+			// MemoryStorage does not accept $dependencies in cache
+			if ($accessToken->isExpired()) {
+				$this->cache->remove($config->getClientId());
+				$accessToken = null;
+			} else {
+				break;
+			}
 		}
 
-		// Load token from cache
-		$token = $this->loadAccessToken($config);
-		if ($token !== null && !$token->isExpired()) {
-			return $this->accessToken = $token;
+		if ($accessToken === null) {
+			throw new RuntimeException('Could not load access token.');
 		}
 
-		// We need to request token
-		$token = parent::getAccessToken($config);
-		$this->saveAccessToken($config, $token);
-
-		return $this->accessToken = $token;
-	}
-
-	private function loadAccessToken(Config $config): ?AccessToken
-	{
-		$token = $this->cache->load($config->getClientId());
-		if ($token === null) {
-			return null;
-		}
-		assert(is_array($token) && isset($token['access_token'], $token['expires_in'], $token['token_type'], $token['scope']));
-
-		$expiresAt = DateTimeImmutable::createFromFormat(DateTimeImmutable::ATOM, $token['expires_at']);
-		$token['expires_at'] = $expiresAt === false ? null : $expiresAt;
-
-		 return AccessToken::fromArray($token);
-	}
-
-	private function saveAccessToken(Config $config, AccessToken $token): void
-	{
-		$this->cache->save($config->getClientId(), $token->toArray(), [
-			Cache::EXPIRE => $token->getExpiresAt()->getTimestamp(),
-		]);
+		return $accessToken;
 	}
 
 }
