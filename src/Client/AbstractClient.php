@@ -6,8 +6,10 @@ use Contributte\Gosms\Auth\IAccessTokenProvider;
 use Contributte\Gosms\Config;
 use Contributte\Gosms\Exception\ClientException;
 use Contributte\Gosms\Http\IHttpClient;
+use Nette\Utils\Json;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use stdClass;
 
 abstract class AbstractClient
 {
@@ -43,6 +45,16 @@ abstract class AbstractClient
 		if ($response->getStatusCode() !== $code) {
 			throw new ClientException($response->getBody()->getContents(), $response->getStatusCode());
 		}
+	}
+
+	protected function decodeResponse(ResponseInterface $response): stdClass
+	{
+		$this->assertResponse($response);
+
+		$data = Json::decode($response->getBody()->getContents());
+		assert($data instanceof stdClass);
+
+		return $data;
 	}
 
 }

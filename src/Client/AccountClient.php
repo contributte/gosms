@@ -3,18 +3,16 @@
 namespace Contributte\Gosms\Client;
 
 use GuzzleHttp\Psr7\Request;
-use Nette\Utils\Json;
+use \stdClass;
 
 class AccountClient extends AbstractClient
 {
 
-	public function detail(): object
+	public function detail(): stdClass
 	{
 		$response = $this->doRequest(new Request('GET', self::BASE_URL . '/'));
 
-		$this->assertResponse($response);
-
-		return Json::decode($response->getBody()->getContents());
+		return $this->decodeResponse($response);
 	}
 
 }

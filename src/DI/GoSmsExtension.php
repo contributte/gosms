@@ -9,7 +9,7 @@ use Contributte\Gosms\Config;
 use Contributte\Gosms\Http\GuzzletteClient;
 use Nette;
 use Nette\DI\CompilerExtension;
-use Nette\DI\Statement;
+use Nette\DI\Definitions\Statement;
 use Nette\Schema\Expect;
 use stdClass;
 
