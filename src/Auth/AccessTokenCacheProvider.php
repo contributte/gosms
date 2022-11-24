@@ -7,7 +7,7 @@ use Contributte\Gosms\Entity\AccessToken;
 use Contributte\Gosms\Http\IHttpClient;
 use DateTimeImmutable;
 use Nette\Caching\Cache;
-use Nette\Caching\IStorage;
+use Nette\Caching\Storage;
 
 class AccessTokenCacheProvider extends AccessTokenClient
 {
@@ -20,7 +20,7 @@ class AccessTokenCacheProvider extends AccessTokenClient
 	/** @var Cache */
 	protected $cache;
 
-	public function __construct(IHttpClient $client, IStorage $storage)
+	public function __construct(IHttpClient $client, Storage $storage)
 	{
 		parent::__construct($client);
 		$this->cache = new Cache($storage, self::CACHE_NAMESPACE);
@@ -52,8 +52,10 @@ class AccessTokenCacheProvider extends AccessTokenClient
 		if ($token === null) {
 			return null;
 		}
+		assert(is_array($token) && isset($token['access_token'], $token['expires_in'], $token['token_type'], $token['scope']));
 
-		$token['expires_at'] = DateTimeImmutable::createFromFormat(DateTimeImmutable::ATOM, $token['expires_at']);
+		$expiresAt = DateTimeImmutable::createFromFormat(DateTimeImmutable::ATOM, $token['expires_at']);
+		$token['expires_at'] = $expiresAt === false ? null : $expiresAt;
 
 		 return AccessToken::fromArray($token);
 	}

@@ -62,7 +62,7 @@ final class AccessToken
 	}
 
 	/**
-	 * @param mixed[] $data
+	 * @param array{access_token: string, expires_in: int, token_type: string, scope: string, expires_at?: ?DateTimeImmutable} $data
 	 */
 	public static function fromArray(array $data): self
 	{
@@ -76,7 +76,7 @@ final class AccessToken
 	}
 
 	/**
-	 * @return mixed[]
+	 * @return array{access_token: string, expires_in: int, token_type: string, scope: string, expires_at: string}
 	 */
 	public function toArray(): array
 	{

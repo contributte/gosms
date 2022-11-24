@@ -40,7 +40,7 @@ class AccessTokenClient implements IAccessTokenProvider
 		$body = sprintf('client_id=%s&client_secret=%s&grant_type=client_credentials', $config->getClientId(), $config->getClientSecret());
 
 		$response = $this->client->sendRequest(
-			new Request('POST', self::URL, ['Content-Type' => 'application/x-www-form-urlencoded'], $body)
+			new Request('POST', self::URL, ['Content-Type' => 'application/x-www-form-urlencoded'], $body),
 		);
 
 		if ($response->getStatusCode() !== 200) {
@@ -48,6 +48,7 @@ class AccessTokenClient implements IAccessTokenProvider
 		}
 
 		$data = Json::decode($response->getBody()->getContents(), Json::FORCE_ARRAY);
+		assert(is_array($data) && isset($data['access_token'], $data['expires_in'], $data['token_type'], $data['scope']));
 
 		return AccessToken::fromArray($data);
 	}
