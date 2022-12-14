@@ -15,9 +15,9 @@ test(function (): void {
 	);
 
 	Assert::true(
-		(new AccessToken('foo', 3600, 'asdf', 'scope', new DateTimeImmutable('+29 seconds')))->isExpired(),
+		(new AccessToken('foo', 3600, 'asdf', 'scope', (new DateTimeImmutable('+29 seconds'))->getTimestamp()))->isExpired(),
 	);
 	Assert::false(
-		(new AccessToken('foo', 3600, 'asdf', 'scope', new DateTimeImmutable('+30 seconds')))->isExpired(),
+		(new AccessToken('foo', 3600, 'asdf', 'scope', (new DateTimeImmutable('+30 seconds'))->getTimestamp()))->isExpired(),
 	);
 });

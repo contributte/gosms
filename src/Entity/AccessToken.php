@@ -2,8 +2,6 @@
 
 namespace Contributte\Gosms\Entity;
 
-use DateTimeImmutable;
-
 final class AccessToken
 {
 	public const PRE_FETCH_SECONDS = 30;
@@ -14,7 +12,7 @@ final class AccessToken
 	/** @var int */
 	private $expiresIn;
 
-	/** @var DateTimeImmutable */
+	/** @var int */
 	private $expiresAt;
 
 	/** @var string */
@@ -23,18 +21,18 @@ final class AccessToken
 	/** @var string */
 	private $scope;
 
-	public function __construct(string $accessToken, int $expiresIn, string $tokenType, string $scope, ?DateTimeImmutable $expiresAt = null)
+	public function __construct(string $accessToken, int $expiresIn, string $tokenType, string $scope, ?int $expiresAt = null)
 	{
 		$this->accessToken = $accessToken;
 		$this->expiresIn = $expiresIn;
 		$this->tokenType = $tokenType;
 		$this->scope = $scope;
-		$this->expiresAt = $expiresAt ?? new DateTimeImmutable(sprintf('+%d seconds', $expiresIn));
+		$this->expiresAt = $expiresAt ?? time() + $expiresIn;
 	}
 
 	public function isExpired(): bool
 	{
-		return $this->expiresAt->modify(sprintf('-%s seconds', self::PRE_FETCH_SECONDS))->getTimestamp() < time();
+		return $this->expiresAt - self::PRE_FETCH_SECONDS < time();
 	}
 
 	public function getAccessToken(): string
@@ -57,13 +55,13 @@ final class AccessToken
 		return $this->scope;
 	}
 
-	public function getExpiresAt(): DateTimeImmutable
+	public function getExpiresAt(): int
 	{
 		return $this->expiresAt;
 	}
 
 	/**
-	 * @param array{access_token: string, expires_in: int, token_type: string, scope: string, expires_at?: ?DateTimeImmutable} $data
+	 * @param array{access_token: string, expires_in: int, token_type: string, scope: string, expires_at?: ?int} $data
 	 */
 	public static function fromArray(array $data): self
 	{
@@ -86,7 +84,7 @@ final class AccessToken
 			'expires_in' => $this->expiresIn,
 			'token_type' => $this->tokenType,
 			'scope' => $this->scope,
-			'expires_at' => $this->expiresAt->format(DateTimeImmutable::ATOM),
+			'expires_at' => strval($this->expiresAt),
 		];
 	}
 
@@ -99,7 +97,7 @@ final class AccessToken
 		$this->expiresIn = $data['expires_in'];
 		$this->tokenType = $data['token_type'];
 		$this->scope = $data['scope'];
-		$this->expiresAt = new DateTimeImmutable($data['expires_at']);
+		$this->expiresAt = intval($data['expires_at']);
 	}
 
 }
