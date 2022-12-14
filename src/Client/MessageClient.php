@@ -21,7 +21,7 @@ class MessageClient extends AbstractClient
 			new Request('POST', self::BASE_URL, ['Content-Type' => 'application/json'], $body)
 		);
 
-		$res = $this->decodeResponse($response);
+		$res = $this->decodeResponse($response, 201);
 
 		$res->parsedId = str_replace('messages/', '', Strings::match($res->link, '~messages/\d+~')[0] ?? '');
 

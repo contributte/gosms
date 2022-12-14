@@ -47,9 +47,9 @@ abstract class AbstractClient
 		}
 	}
 
-	protected function decodeResponse(ResponseInterface $response): stdClass
+	protected function decodeResponse(ResponseInterface $response, int $code = 200): stdClass
 	{
-		$this->assertResponse($response);
+		$this->assertResponse($response, $code);
 
 		$data = Json::decode($response->getBody()->getContents());
 		assert($data instanceof stdClass);
