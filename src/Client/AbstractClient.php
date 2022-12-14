@@ -16,14 +16,11 @@ abstract class AbstractClient
 
 	protected const BASE_URL = 'https://app.gosms.cz/api/v1';
 
-	/** @var Config */
-	private $config;
+	private Config $config;
 
-	/** @var IHttpClient */
-	private $client;
+	private IHttpClient $client;
 
-	/** @var IAccessTokenProvider */
-	private $accessTokenProvider;
+	private IAccessTokenProvider $accessTokenProvider;
 
 	public function __construct(Config $config, IHttpClient $client, IAccessTokenProvider $accessTokenProvider)
 	{

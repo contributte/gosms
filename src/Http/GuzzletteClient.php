@@ -10,8 +10,7 @@ use Psr\Http\Message\ResponseInterface;
 final class GuzzletteClient implements IHttpClient
 {
 
-	/** @var Client */
-	private $client;
+	private Client $client;
 
 	public function __construct(ClientFactory $clientFactory)
 	{

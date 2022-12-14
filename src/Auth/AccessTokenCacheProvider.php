@@ -13,8 +13,7 @@ class AccessTokenCacheProvider extends AccessTokenClient
 
 	private const CACHE_NAMESPACE = 'Contributte/Gosms';
 
-	/** @var Cache */
-	protected $cache;
+	protected Cache $cache;
 
 	public function __construct(IHttpClient $client, Storage $storage)
 	{
