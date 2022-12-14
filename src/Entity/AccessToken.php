@@ -6,6 +6,7 @@ use DateTimeImmutable;
 
 final class AccessToken
 {
+	public const PRE_FETCH_SECONDS = 30;
 
 	/** @var string */
 	private $accessToken;
@@ -33,7 +34,7 @@ final class AccessToken
 
 	public function isExpired(): bool
 	{
-		return $this->expiresAt->modify('-30 seconds')->getTimestamp() < time();
+		return $this->expiresAt->modify(sprintf('-%s seconds', self::PRE_FETCH_SECONDS))->getTimestamp() < time();
 	}
 
 	public function getAccessToken(): string
