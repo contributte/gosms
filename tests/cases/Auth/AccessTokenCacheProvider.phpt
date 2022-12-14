@@ -9,7 +9,6 @@ use Nette\Caching\Storage;
 use Nette\Caching\Storages\MemoryStorage;
 use Tester\Assert;
 use Tester\Environment;
-use Contributte\Gosms\Exception;
 
 require_once __DIR__ . '/../../bootstrap.php';
 
@@ -81,66 +80,4 @@ test(function (): void {
 	Assert::same('scope', $token->getScope());
 	sleep(1); // expire token by method $token->isExpired()
 	Assert::same('second', $client->getAccessToken($config)->getTokenType());
-});
-
-// Cached token is expired so we request new one and save new one to cache
-test(function (): void {
-	$http = Mockery::mock(IHttpClient::class);
-	$http->shouldReceive('sendRequest')
-		->andReturn(new Response(200, [], '{"access_token":"token","expires_in":123,"token_type":"type","scope":"scope"}'));
-
-	$storage = Mockery::mock(Storage::class);
-	$storage->shouldReceive('read')
-		->andReturn(
-			AccessToken::fromArray([
-				'access_token' => 'cached',
-				'expires_in' => 999,
-				'token_type' => 'cached',
-				'scope' => 'cached',
-				'expires_at' => new DateTimeImmutable('-5 minutes'),
-			]),
-			null,
-		);
-	$storage->shouldReceive('remove');
-	$storage->shouldReceive('lock');
-	$storage->shouldReceive('write')
-		->withArgs(function (string $key, AccessToken $accessToken): bool {
-			Assert::same('token', $accessToken->getAccessToken());
-
-			return true;
-		})->once();
-
-	$client = new AccessTokenCacheProvider($http, $storage);
-	$token = $client->getAccessToken(new Config('foo', 'bar'));
-
-	Assert::same('token', $token->getAccessToken());
-	Assert::same(123, $token->getExpiresIn());
-	Assert::same('type', $token->getTokenType());
-	Assert::same('scope', $token->getScope());
-});
-
-// Cached token is expired so we request new one, but it is expired too
-test(function (): void {
-	$http = Mockery::mock(IHttpClient::class);
-	$http->shouldReceive('sendRequest')
-		->andReturn(new Response(200, [], '{"access_token":"token","expires_in":123,"token_type":"type","scope":"scope"}'));
-
-	$storage = Mockery::mock(Storage::class);
-	$storage->shouldReceive('read')
-		->andReturn(
-			AccessToken::fromArray([
-				'access_token' => 'cached',
-				'expires_in' => 999,
-				'token_type' => 'cached',
-				'scope' => 'cached',
-				'expires_at' => new DateTimeImmutable('-5 minutes'),
-			]),
-		);
-	$storage->shouldReceive('remove');
-
-	$client = new AccessTokenCacheProvider($http, $storage);
-
-	Assert::exception(function () use ($client) {
-		$client->getAccessToken(new Config('foo', 'bar'));
-	}, Exception\RuntimeException::class, 'Could not load access token.');
 });
