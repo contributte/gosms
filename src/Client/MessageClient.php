@@ -11,14 +11,14 @@ use stdClass;
 class MessageClient extends AbstractClient
 {
 
-	protected const BASE_URL = 'https://app.gosms.cz/api/v1/messages';
+	protected const BASE_MESSAGE_URL = self::BASE_URL . '/messages';
 
 	public function send(Message $message): stdClass
 	{
 		$body = Json::encode($message->toArray());
 
 		$response = $this->doRequest(
-			new Request('POST', self::BASE_URL, ['Content-Type' => 'application/json'], $body)
+			new Request('POST', self::BASE_MESSAGE_URL, ['Content-Type' => 'application/json'], $body)
 		);
 
 		$res = $this->decodeResponse($response, 201);
@@ -33,7 +33,7 @@ class MessageClient extends AbstractClient
 		$body = Json::encode($message->toArray());
 
 		$response = $this->doRequest(
-			new Request('POST', self::BASE_URL . '/test', ['Content-Type' => 'application/json'], $body)
+			new Request('POST', self::BASE_MESSAGE_URL . '/test', ['Content-Type' => 'application/json'], $body)
 		);
 
 		return $this->decodeResponse($response);
@@ -41,7 +41,7 @@ class MessageClient extends AbstractClient
 
 	public function detail(string $id): stdClass
 	{
-		$url = sprintf('%s/%d', self::BASE_URL, $id);
+		$url = sprintf('%s/%d', self::BASE_MESSAGE_URL, $id);
 
 		$response = $this->doRequest(
 			new Request('GET', $url)
@@ -52,7 +52,7 @@ class MessageClient extends AbstractClient
 
 	public function replies(string $id): stdClass
 	{
-		$url = sprintf('%s/%d/replies', self::BASE_URL, $id);
+		$url = sprintf('%s/%d/replies', self::BASE_MESSAGE_URL, $id);
 
 		$response = $this->doRequest(
 			new Request('GET', $url)
@@ -63,7 +63,7 @@ class MessageClient extends AbstractClient
 
 	public function delete(string $id): void
 	{
-		$url = sprintf('%s/%d', self::BASE_URL, $id);
+		$url = sprintf('%s/%d', self::BASE_MESSAGE_URL, $id);
 
 		$response = $this->doRequest(
 			new Request('DELETE', $url)
