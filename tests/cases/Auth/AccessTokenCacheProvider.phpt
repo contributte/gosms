@@ -48,7 +48,7 @@ test(function (): void {
 			'expires_in' => 999,
 			'token_type' => 'cached',
 			'scope' => 'cached',
-			'expires_at' => new DateTimeImmutable('+1 year'),
+			'expires_at' => (new DateTimeImmutable('+1 year'))->getTimestamp(),
 		]));
 
 	$client = new AccessTokenCacheProvider($http, $storage);
