@@ -14,7 +14,7 @@ use Nette\Schema\Expect;
 use stdClass;
 
 /**
- * @property-read stdClass $config
+ * @method stdClass getConfig()
  */
 class GoSmsExtension extends CompilerExtension
 {
@@ -31,27 +31,41 @@ class GoSmsExtension extends CompilerExtension
 
 	public function loadConfiguration(): void
 	{
-		$config = $this->config;
-		$builder = $this->getContainerBuilder();
+		$config = $this->getConfig();
 
-		$configStatement = new Statement(Config::class, [
-			$config->clientId,
-			$config->clientSecret,
-		]);
-
-		// HttpClient, AccessTokenProvider
 		$this->compiler->loadDefinitionsFromConfig([
 			$this->prefix('httpClient') => $config->httpClient ?? GuzzletteClient::class,
 			$this->prefix('accessTokenProvider') => $config->accessTokenProvider ?? AccessTokenCacheProvider::class,
 		]);
 
-		// Message Client
-		$builder->addDefinition($this->prefix('message'))
-			->setFactory(MessageClient::class, [$configStatement]);
+		$this->buildConfig($config->clientId, $config->clientSecret);
+		$this->buildMessageClient();
+		$this->buildAccountClient();
+	}
 
-		// Account Client
-		$builder->addDefinition($this->prefix('account'))
-			->setFactory(AccountClient::class, [$configStatement]);
+	private function buildConfig(string $clientId, string $clientSecret): void
+	{
+		$this->getContainerBuilder()
+			->addDefinition($this->prefix('config'))
+			->setFactory(Config::class, [
+				$clientId,
+				$clientSecret,
+			])
+			->setAutowired(false);
+	}
+
+	private function buildAccountClient(): void
+	{
+		$this->getContainerBuilder()
+			->addDefinition($this->prefix('account'))
+			->setFactory(AccountClient::class, [$this->prefix('@config')]);
+	}
+
+	private function buildMessageClient(): void
+	{
+		$this->getContainerBuilder()
+			->addDefinition($this->prefix('message'))
+			->setFactory(MessageClient::class, [$this->prefix('@config')]);
 	}
 
 }
