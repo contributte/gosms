@@ -5,11 +5,9 @@ namespace Contributte\Gosms;
 class Config
 {
 
-	/** @var string */
-	private $clientId;
+	private string $clientId;
 
-	/** @var string */
-	private $clientSecret;
+	private string $clientSecret;
 
 	public function __construct(string $clientId, string $clientSecret)
 	{

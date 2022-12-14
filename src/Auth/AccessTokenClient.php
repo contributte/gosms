@@ -14,11 +14,9 @@ class AccessTokenClient implements IAccessTokenProvider
 
 	protected const URL = 'https://app.gosms.cz/oauth/v2/token';
 
-	/** @var AccessToken|null */
-	private $accessToken;
+	private ?AccessToken $accessToken = null;
 
-	/** @var IHttpClient */
-	private $client;
+	private IHttpClient $client;
 
 	public function __construct(IHttpClient $client)
 	{

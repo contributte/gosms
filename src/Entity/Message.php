@@ -7,17 +7,14 @@ use DateTimeImmutable;
 class Message
 {
 
-	/** @var string */
-	private $message;
+	private string $message;
 
-	/** @var mixed[] */
-	private $recipients = [];
+	/** @var array<mixed> */
+	private array $recipients = [];
 
-	/** @var int */
-	private $channel;
+	private int $channel;
 
-	/** @var DateTimeImmutable|NULL */
-	private $expectedSendStart;
+	private ?DateTimeImmutable $expectedSendStart = null;
 
 	/**
 	 * @param mixed[] $recipients
@@ -69,7 +66,7 @@ class Message
 		];
 
 		if ($this->expectedSendStart !== null) {
-			$arr['expectedSendStart'] = $this->expectedSendStart->format(DateTimeImmutable::ATOM);
+			$arr['expectedSendStart'] = $this->expectedSendStart->format($this->expectedSendStart::ATOM);
 		}
 
 		return $arr;
