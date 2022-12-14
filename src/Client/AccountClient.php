@@ -3,7 +3,7 @@
 namespace Contributte\Gosms\Client;
 
 use GuzzleHttp\Psr7\Request;
-use \stdClass;
+use stdClass;
 
 class AccountClient extends AbstractClient
 {
