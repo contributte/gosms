@@ -4,6 +4,7 @@ namespace Contributte\Gosms\Entity;
 
 final class AccessToken
 {
+
 	public const PRE_FETCH_SECONDS = 30;
 
 	private string $accessToken;

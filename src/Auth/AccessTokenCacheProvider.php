@@ -6,19 +6,16 @@ use Contributte\Gosms\Config;
 use Contributte\Gosms\Entity\AccessToken;
 use Contributte\Gosms\Http\IHttpClient;
 use Nette\Caching\Cache;
-use Nette\Caching\Storage;
 
 class AccessTokenCacheProvider extends AccessTokenClient
 {
 
-	private const CACHE_NAMESPACE = 'Contributte/Gosms';
-
 	protected Cache $cache;
 
-	public function __construct(IHttpClient $client, Storage $storage)
+	public function __construct(IHttpClient $client, Cache $cache)
 	{
 		parent::__construct($client);
-		$this->cache = new Cache($storage, self::CACHE_NAMESPACE);
+		$this->cache = $cache;
 	}
 
 	protected function generateAccessToken(Config $config): AccessToken

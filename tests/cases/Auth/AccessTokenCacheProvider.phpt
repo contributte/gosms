@@ -5,6 +5,7 @@ use Contributte\Gosms\Config;
 use Contributte\Gosms\Entity\AccessToken;
 use Contributte\Gosms\Http\IHttpClient;
 use GuzzleHttp\Psr7\Response;
+use Nette\Caching\Cache;
 use Nette\Caching\Storage;
 use Nette\Caching\Storages\MemoryStorage;
 use Tester\Assert;
@@ -20,7 +21,7 @@ test(function (): void {
 	$http->shouldReceive('sendRequest')
 		->andReturn(new Response(200, [], '{"access_token":"token","expires_in":123,"token_type":"type","scope":"scope"}'));
 
-	$client = new AccessTokenCacheProvider($http, new MemoryStorage());
+	$client = new AccessTokenCacheProvider($http, new Cache(new MemoryStorage()));
 	Closure::fromCallable(function (): void {
 		$this->accessToken = Mockery::mock(AccessToken::class);
 		$this->accessToken->shouldReceive('isExpired')
@@ -51,7 +52,7 @@ test(function (): void {
 			'expires_at' => (new DateTimeImmutable('+1 year'))->getTimestamp(),
 		]));
 
-	$client = new AccessTokenCacheProvider($http, $storage);
+	$client = new AccessTokenCacheProvider($http, new Cache($storage));
 	$token = $client->getAccessToken(new Config('foo', 'bar'));
 
 	Assert::same('cached', $token->getAccessToken());
@@ -70,7 +71,7 @@ test(function (): void {
 		);
 
 	$storage = new MemoryStorage();
-	$client = new AccessTokenCacheProvider($http, $storage);
+	$client = new AccessTokenCacheProvider($http, new Cache($storage));
 	$config = new Config('foo', 'bar');
 
 	$token = $client->getAccessToken($config);
