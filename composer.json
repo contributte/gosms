@@ -47,10 +47,10 @@
       "codesniffer src tests"
     ],
     "tests": [
-      "tester -s -p php --colors 1 -C tests/cases"
+      "tester -s -p php --colors 1 -C tests/Cases"
     ],
     "coverage": [
-      "tester -s -p phpdbg --colors 1 -C --coverage ./coverage.xml --coverage-src ./src tests/cases"
+      "tester -s -p phpdbg --colors 1 -C --coverage ./coverage.xml --coverage-src ./src tests/Cases"
     ],
     "phpstan": [
       "vendor/bin/phpstan analyse -l max -c phpstan.neon src"

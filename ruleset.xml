@@ -16,11 +16,11 @@
 	</rule>
 
 	<rule ref="PSR1.Classes.ClassDeclaration.MissingNamespace">
-		<exclude-pattern>*tests/cases/*</exclude-pattern>
+		<exclude-pattern>*tests/Cases/*</exclude-pattern>
 	</rule>
 
 	<rule ref="Squiz.Classes.ClassFileName.NoMatch">
-		<exclude-pattern>*tests/cases/*</exclude-pattern>
+		<exclude-pattern>*tests/Cases/*</exclude-pattern>
 	</rule>
 
 	<!-- Exclude folders -->
