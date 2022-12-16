@@ -22,12 +22,6 @@ test(function (): void {
 		->andReturn(new Response(200, [], '{"access_token":"token","expires_in":123,"token_type":"type","scope":"scope"}'));
 
 	$client = new AccessTokenCacheProvider($http, new Cache(new MemoryStorage()));
-	Closure::fromCallable(function (): void {
-		$this->accessToken = Mockery::mock(AccessToken::class);
-		$this->accessToken->shouldReceive('isExpired')
-			->andReturn(true);
-	})->call($client);
-
 	$token = $client->getAccessToken(new Config('foo', 'bar'));
 
 	Assert::same('token', $token->getAccessToken());
@@ -41,6 +35,10 @@ test(function (): void {
 	$http = Mockery::mock(IHttpClient::class);
 	$http->shouldReceive('sendRequest')
 		->andReturn(new Response(200, [], '{"access_token":"token","expires_in":123,"token_type":"type","scope":"scope"}'));
+
+	if (!interface_exists(Nette\Caching\Storage::class)) {
+		class_alias(Nette\Caching\IStorage::class, 'Nette\Caching\Storage');
+	}
 
 	$storage = Mockery::mock(Storage::class);
 	$storage->shouldReceive('read')

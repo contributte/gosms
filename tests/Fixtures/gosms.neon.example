@@ -1,0 +1,5 @@
+clientId:
+clientSecret:
+channel: # chanel id
+testOnly: true # false = send sms to defined phone number
+phone: '+420123456789' # international format
