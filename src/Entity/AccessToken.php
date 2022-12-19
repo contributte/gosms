@@ -71,7 +71,7 @@ final class AccessToken
 	}
 
 	/**
-	 * @return array{access_token: string, expires_in: int, token_type: string, scope: string, expires_at: string}
+	 * @return array{access_token: string, expires_in: int, token_type: string, scope: string, expires_at: int}
 	 */
 	public function __serialize(): array
 	{
@@ -80,12 +80,12 @@ final class AccessToken
 			'expires_in' => $this->expiresIn,
 			'token_type' => $this->tokenType,
 			'scope' => $this->scope,
-			'expires_at' => strval($this->expiresAt),
+			'expires_at' => $this->expiresAt,
 		];
 	}
 
 	/**
-	 * @param array{access_token: string, expires_in: int, token_type: string, scope: string, expires_at: string} $data
+	 * @param array{access_token: string, expires_in: int, token_type: string, scope: string, expires_at: int} $data
 	 */
 	public function __unserialize(array $data): void
 	{
@@ -93,7 +93,7 @@ final class AccessToken
 		$this->expiresIn = $data['expires_in'];
 		$this->tokenType = $data['token_type'];
 		$this->scope = $data['scope'];
-		$this->expiresAt = intval($data['expires_at']);
+		$this->expiresAt = $data['expires_at'];
 	}
 
 }
