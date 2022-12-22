@@ -13,7 +13,7 @@ Create account on GoSMS.cz and copy clientId and clientSecret from administratio
 
 If you use default HTTP client, you need to install and register [guzzlette](https://github.com/contributte/guzzlette/) extension.
 
-GoSMS.cz access tokens are valid for 3600 seconds. Default AccessTokenCacheProvider stores them in cache using [nette/caching](https://github.com/nette/caching);
+GoSMS.cz access tokens are valid for 3600 seconds. Default `AccessTokenCacheProvider` stores them in cache using [nette/caching](https://github.com/nette/caching);
 
 * **clientId**
 * **clientSecret**
@@ -34,8 +34,8 @@ gosms:
 	clientSecret: caajrzi80zs4cwgg8400swwo8wgc4kook0s8s48kw8s00sgws
 
 	# Optional
-	httpClient:
-	accessTokenProvider:
+	httpClient: Contributte\Gosms\Http\GuzzletteClient
+	accessTokenProvider: Contributte\Gosms\Auth\AccessTokenCacheProvider
 ```
 
 
