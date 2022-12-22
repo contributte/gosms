@@ -21,7 +21,7 @@
     }
   ],
   "require": {
-    "php": ">= 7.4",
+    "php": ">= 8.0",
     "ext-json": "*",
     "guzzlehttp/psr7": "^1.4 || ^2.0",
     "nette/utils": "^3.1"
