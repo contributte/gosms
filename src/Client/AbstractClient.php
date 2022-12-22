@@ -14,7 +14,7 @@ use stdClass;
 abstract class AbstractClient
 {
 
-	protected const BASE_URL = 'https://app.gosms.cz/api/v1';
+	protected const BASE_URL = Config::URL . '/api/v1';
 
 	private Config $config;
 

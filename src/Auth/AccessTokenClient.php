@@ -12,7 +12,7 @@ use Nette\Utils\Json;
 class AccessTokenClient implements IAccessTokenProvider
 {
 
-	protected const URL = 'https://app.gosms.cz/oauth/v2/token';
+	protected const URL = Config::URL . '/oauth/v2/token';
 
 	private ?AccessToken $accessToken = null;
 
