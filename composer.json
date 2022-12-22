@@ -12,7 +12,12 @@
   "homepage": "https://github.com/contributte/gosms",
   "authors": [
     {
-      "name": "Filip Šuška"
+      "name": "Milan Felix Šulc",
+      "homepage": "https://f3l1x.io"
+    },
+    {
+      "name": "Filip Šuška",
+      "email": "filipsuska@gmail.com"
     }
   ],
   "require": {
