@@ -7,10 +7,11 @@ use Contributte\Gosms\Client\AccountClient;
 use Contributte\Gosms\Client\MessageClient;
 use Contributte\Gosms\Config;
 use Contributte\Gosms\Http\GuzzletteClient;
-use Nette;
+use Nette\Caching\Cache;
 use Nette\DI\CompilerExtension;
 use Nette\DI\Definitions\Statement;
 use Nette\Schema\Expect;
+use Nette\Schema\Schema;
 use stdClass;
 
 /**
@@ -19,7 +20,9 @@ use stdClass;
 class GoSmsExtension extends CompilerExtension
 {
 
-	public function getConfigSchema(): Nette\Schema\Schema
+	public const CACHE_NAMESPACE = 'Contributte/Gosms';
+
+	public function getConfigSchema(): Schema
 	{
 		return Expect::structure([
 			'clientId' => Expect::string()->required(),
@@ -31,14 +34,11 @@ class GoSmsExtension extends CompilerExtension
 
 	public function loadConfiguration(): void
 	{
+		$builder = $this->getContainerBuilder();
 		$config = $this->getConfig();
 
-		$this->compiler->loadDefinitionsFromConfig([
-			$this->prefix('httpClient') => $config->httpClient ?? GuzzletteClient::class,
-			$this->prefix('accessTokenProvider') => $config->accessTokenProvider ?? $this->accessTokenCacheProviderStatement(),
-		]);
-
-		$this->getContainerBuilder()
+		// Config
+		$builder
 			->addDefinition($this->prefix('config'))
 			->setFactory(Config::class, [
 				$config->clientId,
@@ -46,23 +46,35 @@ class GoSmsExtension extends CompilerExtension
 			])
 			->setAutowired(false);
 
-		$this->getContainerBuilder()
+		// Message client
+		$builder
 			->addDefinition($this->prefix('message'))
 			->setFactory(MessageClient::class, [$this->prefix('@config')]);
 
-		$this->getContainerBuilder()
+		// Account client
+		$builder
 			->addDefinition($this->prefix('account'))
 			->setFactory(AccountClient::class, [$this->prefix('@config')]);
-	}
 
-	private function accessTokenCacheProviderStatement(): Nette\DI\Definitions\Statement
-	{
-		$this->getContainerBuilder()
-			->addDefinition($this->prefix('cache'))
-			->setFactory(Nette\Caching\Cache::class, ['namespace' => 'Contributte/Gosms'])
-			->setAutowired(false);
+		// Http client
+		$this->compiler->loadDefinitionsFromConfig([
+			$this->prefix('httpClient') => $config->httpClient ?? GuzzletteClient::class,
+		]);
 
-		return new Nette\DI\Definitions\Statement(AccessTokenCacheProvider::class, [$this->prefix('@httpClient'), $this->prefix('@cache')]);
+		// Access token
+		$accessTokenProvider = $config->accessTokenProvider;
+		if (!$config->accessTokenProvider) {
+			$builder
+				->addDefinition($this->prefix('cache'))
+				->setFactory(Cache::class, ['namespace' => self::CACHE_NAMESPACE])
+				->setAutowired(false);
+
+			$accessTokenProvider = new Statement(AccessTokenCacheProvider::class, [$this->prefix('@httpClient'), $this->prefix('@cache')]);
+		}
+
+		$this->compiler->loadDefinitionsFromConfig([
+			$this->prefix('accessTokenProvider') => $accessTokenProvider,
+		]);
 	}
 
 }
