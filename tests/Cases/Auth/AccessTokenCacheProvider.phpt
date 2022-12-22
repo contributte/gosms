@@ -6,6 +6,7 @@ use Contributte\Gosms\Entity\AccessToken;
 use Contributte\Gosms\Http\IHttpClient;
 use GuzzleHttp\Psr7\Response;
 use Nette\Caching\Cache;
+use Nette\Caching\IStorage;
 use Nette\Caching\Storage;
 use Nette\Caching\Storages\MemoryStorage;
 use Tester\Assert;
@@ -36,8 +37,8 @@ test(function (): void {
 	$http->shouldReceive('sendRequest')
 		->andReturn(new Response(200, [], '{"access_token":"token","expires_in":123,"token_type":"type","scope":"scope"}'));
 
-	if (!interface_exists(Nette\Caching\Storage::class)) {
-		class_alias(Nette\Caching\IStorage::class, 'Nette\Caching\Storage');
+	if (!interface_exists(Storage::class)) {
+		class_alias(IStorage::class, 'Nette\Caching\Storage');
 	}
 
 	$storage = Mockery::mock(Storage::class);
