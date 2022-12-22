@@ -5,6 +5,8 @@ namespace Contributte\Gosms;
 class Config
 {
 
+	public const URL = 'https://app.gosms.cz';
+
 	private string $clientId;
 
 	private string $clientSecret;
