@@ -26,7 +26,7 @@ GoSMS.cz access tokens are valid for 3600 seconds. Default `AccessTokenCacheProv
 ```neon
 extensions:
 	guzzlette: Contributte\Guzzlette\DI\GuzzleExtension # optional for default HTTP client
-	gosms: App\Model\GoSMS\DI\GoSmsExtension
+	gosms: Contributte\Gosms\DI\GoSmsExtension
 
 gosms:
 	# Required
