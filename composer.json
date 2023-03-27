@@ -24,7 +24,7 @@
     "php": ">= 8.0",
     "ext-json": "*",
     "guzzlehttp/psr7": "^2.0",
-    "nette/utils": "^3.1"
+    "nette/utils": "^3.1 || ^4.0"
   },
   "require-dev": {
     "contributte/guzzlette": "^3.0",
@@ -32,7 +32,7 @@
     "nette/caching": "^3.0",
     "nette/di": "^3.1.0",
     "nette/tester": "^2.3.1",
-    "ninjify/nunjuck": "^0.3",
+    "ninjify/nunjuck": "^0.4",
     "ninjify/qa": "^0.13",
     "phpstan/phpstan": "^1.0",
     "phpstan/phpstan-deprecation-rules": "^1.0",
