@@ -22,7 +22,7 @@ class AccessTokenCacheProvider extends AccessTokenClient
 	{
 		$accessToken = $this->cache->load($config->getClientId(), function (&$dependecies) use ($config): AccessToken {
 			$token = parent::generateAccessToken($config);
-			$dependecies[Cache::EXPIRE] = $token->getExpiresAt() - AccessToken::PRE_FETCH_SECONDS;
+			$dependecies[Cache::Expire] = $token->getExpiresAt() - AccessToken::PRE_FETCH_SECONDS;
 
 			return $token;
 		});
