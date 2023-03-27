@@ -5,8 +5,8 @@ namespace Tests\Cases\E2E;
 use Contributte\Gosms\Client\MessageClient;
 use Contributte\Gosms\DI\GoSmsExtension;
 use Contributte\Gosms\Entity\Message;
+use Contributte\Gosms\Exception\ClientException;
 use Contributte\Guzzlette\DI\GuzzleExtension;
-use GuzzleHttp\Exception\ClientException;
 use Nette\Caching\Storages\MemoryStorage;
 use Nette\DI\Compiler;
 use Nette\DI\Container;
@@ -52,7 +52,7 @@ class SendSmsTest extends TestCase
 		$response = $this->client->test($message);
 		Assert::same('CONCEPT', $response->sendingInfo->status);
 
-		if ($this->client['testOnly'] === false) {
+		if ($this->config['sendSms'] === true) {
 			$response = $this->client->send($message);
 			$messageId = $response->parsedId;
 			Assert::true(Validators::isNumericInt($messageId));
