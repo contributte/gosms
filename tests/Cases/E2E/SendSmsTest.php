@@ -24,9 +24,10 @@ class SendSmsTest extends TestCase
 
 	private MessageClient $client;
 
+	/** @var mixed[] */
 	private array $config = [];
 
-	protected function setUp()
+	public function setUp(): void
 	{
 		parent::setUp();
 
@@ -65,7 +66,7 @@ class SendSmsTest extends TestCase
 
 			sleep(2); // wait for send sms
 			$this->client->delete($messageId);
-			Assert::exception(function () use ($messageId) {
+			Assert::exception(function () use ($messageId): void {
 				$this->client->detail($messageId);
 			}, ClientException::class);
 		}
