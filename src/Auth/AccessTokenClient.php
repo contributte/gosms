@@ -45,6 +45,7 @@ class AccessTokenClient implements IAccessTokenProvider
 			throw new ClientException($response->getBody()->getContents(), $response->getStatusCode());
 		}
 
+		// @phpstan-ignore-next-line
 		$data = Json::decode($response->getBody()->getContents(), Json::FORCE_ARRAY);
 		assert(is_array($data) && isset($data['access_token'], $data['expires_in'], $data['token_type'], $data['scope']));
 
