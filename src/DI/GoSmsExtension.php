@@ -7,12 +7,13 @@ use Contributte\Gosms\Client\AccountClient;
 use Contributte\Gosms\Client\MessageClient;
 use Contributte\Gosms\Config;
 use Contributte\Gosms\Http\GuzzletteClient;
-use Nette\Caching\Cache;
+use Nette\Bridges\Psr\PsrCacheAdapter;
 use Nette\DI\CompilerExtension;
 use Nette\DI\Definitions\Statement;
 use Nette\Schema\Expect;
 use Nette\Schema\Schema;
 use Psr\Http\Client\ClientInterface;
+use Psr\SimpleCache\CacheInterface;
 use stdClass;
 
 /**
@@ -20,8 +21,6 @@ use stdClass;
  */
 class GoSmsExtension extends CompilerExtension
 {
-
-	public const CACHE_NAMESPACE = 'Contributte/Gosms';
 
 	public function getConfigSchema(): Schema
 	{
@@ -62,7 +61,8 @@ class GoSmsExtension extends CompilerExtension
 		if (!$config->accessTokenProvider) {
 			$builder
 				->addDefinition($this->prefix('cache'))
-				->setFactory(Cache::class, ['namespace' => self::CACHE_NAMESPACE])
+				->setType(CacheInterface::class)
+				->setFactory(PsrCacheAdapter::class)
 				->setAutowired(false);
 
 			$accessTokenProvider = new Statement(AccessTokenCacheProvider::class, [$this->prefix('@httpClient'), $this->prefix('@cache')]);
