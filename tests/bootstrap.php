@@ -9,5 +9,6 @@ if (@!include __DIR__ . '/../vendor/autoload.php') {
 
 // Configure environment
 Environment::setupTester();
-Environment::setupTimezone();
-Environment::setupVariables(__DIR__);
+Environment::setupTimezone('Europe/Prague');
+Environment::setupFolders(__DIR__);
+Environment::setupFunctions();

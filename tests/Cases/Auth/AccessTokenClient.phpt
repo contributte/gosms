@@ -13,7 +13,7 @@ require_once __DIR__ . '/../../bootstrap.php';
 Environment::bypassFinals();
 
 // Check client creates token and requests a new one when saved is expired
-test(function (): void {
+test('AccessTokenClient', function (): void {
 	$http = Mockery::mock(ClientInterface::class);
 	$http->shouldReceive('sendRequest')
 		->andReturn(new Response(200, [], '{"access_token":"token","expires_in":123,"token_type":"type","scope":"scope"}'));

@@ -5,7 +5,7 @@ use Tester\Assert;
 
 require_once __DIR__ . '/../../bootstrap.php';
 
-test(function (): void {
+test('AccessToken with expiration', function (): void {
 	Assert::true(
 		(new AccessToken('foo', 29, 'asdf', 'scope'))->isExpired(),
 	);

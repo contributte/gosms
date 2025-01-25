@@ -2,6 +2,9 @@
 
 namespace Contributte\Gosms\Entity;
 
+/**
+ * @phpstan-type SourceType array{access_token: string, expires_in: int, token_type: string, scope: string, expires_at?: ?int}
+ */
 final class AccessToken
 {
 
@@ -27,7 +30,7 @@ final class AccessToken
 	}
 
 	/**
-	 * @param array{access_token: string, expires_in: int, token_type: string, scope: string, expires_at?: ?int} $data
+	 * @param SourceType $data
 	 */
 	public static function fromArray(array $data): self
 	{

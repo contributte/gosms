@@ -9,6 +9,9 @@ use GuzzleHttp\Psr7\Request;
 use Nette\Utils\Json;
 use Psr\Http\Client\ClientInterface;
 
+/**
+ * @phpstan-import-type SourceType from AccessToken
+ */
 class AccessTokenClient implements IAccessTokenProvider
 {
 
@@ -45,9 +48,8 @@ class AccessTokenClient implements IAccessTokenProvider
 			throw new ClientException($response->getBody()->getContents(), $response->getStatusCode());
 		}
 
-		// @phpstan-ignore-next-line
-		$data = Json::decode($response->getBody()->getContents(), Json::FORCE_ARRAY);
-		assert(is_array($data) && isset($data['access_token'], $data['expires_in'], $data['token_type'], $data['scope']));
+		/** @var SourceType $data */
+		$data = Json::decode($response->getBody()->getContents(), true);
 
 		return AccessToken::fromArray($data);
 	}
