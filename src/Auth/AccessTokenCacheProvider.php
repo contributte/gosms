@@ -4,15 +4,15 @@ namespace Contributte\Gosms\Auth;
 
 use Contributte\Gosms\Config;
 use Contributte\Gosms\Entity\AccessToken;
-use Contributte\Gosms\Http\IHttpClient;
 use Nette\Caching\Cache;
+use Psr\Http\Client\ClientInterface;
 
 class AccessTokenCacheProvider extends AccessTokenClient
 {
 
 	protected Cache $cache;
 
-	public function __construct(IHttpClient $client, Cache $cache)
+	public function __construct(ClientInterface $client, Cache $cache)
 	{
 		parent::__construct($client);
 

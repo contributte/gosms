@@ -3,8 +3,8 @@
 use Contributte\Gosms\Auth\AccessTokenClient;
 use Contributte\Gosms\Config;
 use Contributte\Gosms\Entity\AccessToken;
-use Contributte\Gosms\Http\IHttpClient;
 use GuzzleHttp\Psr7\Response;
+use Psr\Http\Client\ClientInterface;
 use Tester\Assert;
 use Tester\Environment;
 
@@ -14,7 +14,7 @@ Environment::bypassFinals();
 
 // Check client creates token and requests a new one when saved is expired
 test(function (): void {
-	$http = Mockery::mock(IHttpClient::class);
+	$http = Mockery::mock(ClientInterface::class);
 	$http->shouldReceive('sendRequest')
 		->andReturn(new Response(200, [], '{"access_token":"token","expires_in":123,"token_type":"type","scope":"scope"}'));
 

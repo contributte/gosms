@@ -4,10 +4,11 @@ namespace Contributte\Gosms\Http;
 
 use Contributte\Guzzlette\ClientFactory;
 use GuzzleHttp\Client;
+use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-final class GuzzletteClient implements IHttpClient
+final class GuzzletteClient implements ClientInterface
 {
 
 	private Client $client;

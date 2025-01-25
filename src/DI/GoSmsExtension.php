@@ -12,6 +12,7 @@ use Nette\DI\CompilerExtension;
 use Nette\DI\Definitions\Statement;
 use Nette\Schema\Expect;
 use Nette\Schema\Schema;
+use Psr\Http\Client\ClientInterface;
 use stdClass;
 
 /**
@@ -56,11 +57,6 @@ class GoSmsExtension extends CompilerExtension
 			->addDefinition($this->prefix('account'))
 			->setFactory(AccountClient::class, [$this->prefix('@config')]);
 
-		// Http client
-		$this->compiler->loadDefinitionsFromConfig([
-			$this->prefix('httpClient') => $config->httpClient ?? GuzzletteClient::class,
-		]);
-
 		// Access token
 		$accessTokenProvider = $config->accessTokenProvider;
 		if (!$config->accessTokenProvider) {
@@ -75,6 +71,24 @@ class GoSmsExtension extends CompilerExtension
 		$this->compiler->loadDefinitionsFromConfig([
 			$this->prefix('accessTokenProvider') => $accessTokenProvider,
 		]);
+	}
+
+	public function beforeCompile(): void
+	{
+		parent::beforeCompile();
+
+		$config = $this->getConfig();
+
+		$builder = $this->getContainerBuilder();
+		$client = $builder->getByType(ClientInterface::class);
+		if ($client === null) {
+			$builder
+				->addDefinition($this->prefix('httpClient'))
+				->setFactory($config->httpClient ?? GuzzletteClient::class)
+				->setAutowired(false);
+		} else {
+			$builder->addAlias($this->prefix('httpClient'), $client);
+		}
 	}
 
 }

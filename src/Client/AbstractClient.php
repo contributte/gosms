@@ -5,8 +5,8 @@ namespace Contributte\Gosms\Client;
 use Contributte\Gosms\Auth\IAccessTokenProvider;
 use Contributte\Gosms\Config;
 use Contributte\Gosms\Exception\ClientException;
-use Contributte\Gosms\Http\IHttpClient;
 use Nette\Utils\Json;
+use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use stdClass;
@@ -18,11 +18,11 @@ abstract class AbstractClient
 
 	private Config $config;
 
-	private IHttpClient $client;
+	private ClientInterface $client;
 
 	private IAccessTokenProvider $accessTokenProvider;
 
-	public function __construct(Config $config, IHttpClient $client, IAccessTokenProvider $accessTokenProvider)
+	public function __construct(Config $config, ClientInterface $client, IAccessTokenProvider $accessTokenProvider)
 	{
 		$this->client = $client;
 		$this->config = $config;

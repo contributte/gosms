@@ -5,9 +5,9 @@ namespace Contributte\Gosms\Auth;
 use Contributte\Gosms\Config;
 use Contributte\Gosms\Entity\AccessToken;
 use Contributte\Gosms\Exception\ClientException;
-use Contributte\Gosms\Http\IHttpClient;
 use GuzzleHttp\Psr7\Request;
 use Nette\Utils\Json;
+use Psr\Http\Client\ClientInterface;
 
 class AccessTokenClient implements IAccessTokenProvider
 {
@@ -16,9 +16,9 @@ class AccessTokenClient implements IAccessTokenProvider
 
 	private ?AccessToken $accessToken = null;
 
-	private IHttpClient $client;
+	private ClientInterface $client;
 
-	public function __construct(IHttpClient $client)
+	public function __construct(ClientInterface $client)
 	{
 		$this->client = $client;
 	}
