@@ -19,11 +19,8 @@ class AccessTokenClient implements IAccessTokenProvider
 
 	private ?AccessToken $accessToken = null;
 
-	private ClientInterface $client;
-
-	public function __construct(ClientInterface $client)
+	public function __construct(private ClientInterface $client)
 	{
-		$this->client = $client;
 	}
 
 	final public function getAccessToken(Config $config): AccessToken

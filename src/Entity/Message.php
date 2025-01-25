@@ -7,23 +7,13 @@ use DateTimeImmutable;
 class Message
 {
 
-	private string $message;
-
-	/** @var array<mixed> */
-	private array $recipients = [];
-
-	private int $channel;
-
 	private ?DateTimeImmutable $expectedSendStart = null;
 
 	/**
-	 * @param mixed[] $recipients
+	 * @param array<mixed> $recipients
 	 */
-	public function __construct(string $message, array $recipients, int $channel)
+	public function __construct(private string $message, private array $recipients, private int $channel)
 	{
-		$this->message = $message;
-		$this->recipients = $recipients;
-		$this->channel = $channel;
 	}
 
 	public function getMessage(): string
@@ -32,7 +22,7 @@ class Message
 	}
 
 	/**
-	 * @return mixed[]
+	 * @return array<mixed>
 	 */
 	public function getRecipients(): array
 	{
@@ -55,7 +45,7 @@ class Message
 	}
 
 	/**
-	 * @return mixed[]
+	 * @return array<mixed>
 	 */
 	public function toArray(): array
 	{

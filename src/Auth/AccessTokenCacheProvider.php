@@ -10,13 +10,9 @@ use Psr\SimpleCache\CacheInterface;
 class AccessTokenCacheProvider extends AccessTokenClient
 {
 
-	protected CacheInterface $cache;
-
-	public function __construct(ClientInterface $client, CacheInterface $cache)
+	public function __construct(ClientInterface $client, protected CacheInterface $cache)
 	{
 		parent::__construct($client);
-
-		$this->cache = $cache;
 	}
 
 	protected function generateAccessToken(Config $config): AccessToken

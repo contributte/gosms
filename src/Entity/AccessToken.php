@@ -10,22 +10,16 @@ final class AccessToken
 
 	public const PRE_FETCH_SECONDS = 30;
 
-	private string $accessToken;
+	public int $expiresAt;
 
-	private int $expiresIn;
-
-	private int $expiresAt;
-
-	private string $tokenType;
-
-	private string $scope;
-
-	public function __construct(string $accessToken, int $expiresIn, string $tokenType, string $scope, ?int $expiresAt = null)
+	public function __construct(
+		private string $accessToken,
+		private int $expiresIn,
+		private string $tokenType,
+		private string $scope,
+		?int $expiresAt = null,
+	)
 	{
-		$this->accessToken = $accessToken;
-		$this->expiresIn = $expiresIn;
-		$this->tokenType = $tokenType;
-		$this->scope = $scope;
 		$this->expiresAt = $expiresAt ?? time() + $expiresIn;
 	}
 
