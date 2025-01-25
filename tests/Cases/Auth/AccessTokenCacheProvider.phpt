@@ -3,12 +3,12 @@
 use Contributte\Gosms\Auth\AccessTokenCacheProvider;
 use Contributte\Gosms\Config;
 use Contributte\Gosms\Entity\AccessToken;
-use Contributte\Gosms\Http\IHttpClient;
 use GuzzleHttp\Psr7\Response;
 use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
 use Nette\Caching\Storage;
 use Nette\Caching\Storages\MemoryStorage;
+use Psr\Http\Client\ClientInterface;
 use Tester\Assert;
 use Tester\Environment;
 
@@ -18,7 +18,7 @@ Environment::bypassFinals();
 
 // New token
 test(function (): void {
-	$http = Mockery::mock(IHttpClient::class);
+	$http = Mockery::mock(ClientInterface::class);
 	$http->shouldReceive('sendRequest')
 		->andReturn(new Response(200, [], '{"access_token":"token","expires_in":123,"token_type":"type","scope":"scope"}'));
 
@@ -33,7 +33,7 @@ test(function (): void {
 
 // Cached token
 test(function (): void {
-	$http = Mockery::mock(IHttpClient::class);
+	$http = Mockery::mock(ClientInterface::class);
 	$http->shouldReceive('sendRequest')
 		->andReturn(new Response(200, [], '{"access_token":"token","expires_in":123,"token_type":"type","scope":"scope"}'));
 
@@ -62,7 +62,7 @@ test(function (): void {
 
 // Cached token is expired
 test(function (): void {
-	$http = Mockery::mock(IHttpClient::class);
+	$http = Mockery::mock(ClientInterface::class);
 	$http->shouldReceive('sendRequest')
 		->andReturn(
 			new Response(200, [], '{"access_token":"token","expires_in":30,"token_type":"first","scope":"scope"}'),

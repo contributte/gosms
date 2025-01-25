@@ -2,12 +2,12 @@
 
 namespace Contributte\Gosms\Http;
 
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Client\ClientInterface;
 
-interface IHttpClient
+/**
+ * @deprecated use ClientInterface directly
+ */
+interface IHttpClient extends ClientInterface
 {
-
-	public function sendRequest(RequestInterface $request): ResponseInterface;
 
 }

@@ -24,7 +24,8 @@
     "php": ">= 8.0",
     "ext-json": "*",
     "guzzlehttp/psr7": "^2.4.4",
-    "nette/utils": "^3.2.9 || ^4.0.0"
+    "nette/utils": "^3.2.9 || ^4.0.0",
+    "psr/http-client": "^1.0"
   },
   "require-dev": {
     "contributte/guzzlette": "^3.3.0",
