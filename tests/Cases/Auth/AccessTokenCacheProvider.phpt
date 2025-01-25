@@ -4,8 +4,10 @@ use Contributte\Gosms\Auth\AccessTokenCacheProvider;
 use Contributte\Gosms\Config;
 use Contributte\Gosms\Entity\AccessToken;
 use GuzzleHttp\Psr7\Response;
+use Nette\Bridges\Psr\PsrCacheAdapter;
 use Nette\Caching\Cache;
 use Nette\Caching\Storage;
+use Nette\Caching\Storages\FileStorage;
 use Nette\Caching\Storages\MemoryStorage;
 use Psr\Http\Client\ClientInterface;
 use Tester\Assert;
@@ -21,7 +23,7 @@ test('AccessTokenCacheProvider', function (): void {
 	$http->shouldReceive('sendRequest')
 		->andReturn(new Response(200, [], '{"access_token":"token","expires_in":123,"token_type":"type","scope":"scope"}'));
 
-	$client = new AccessTokenCacheProvider($http, new Cache(new MemoryStorage()));
+	$client = new AccessTokenCacheProvider($http, new PsrCacheAdapter(new MemoryStorage()));
 	$token = $client->getAccessToken(new Config('foo', 'bar'));
 
 	Assert::same('token', $token->getAccessToken());
@@ -46,7 +48,7 @@ test('AccessTokenCacheProvider with storage', function (): void {
 			'expires_at' => (new DateTimeImmutable('+1 year'))->getTimestamp(),
 		]));
 
-	$client = new AccessTokenCacheProvider($http, new Cache($storage));
+	$client = new AccessTokenCacheProvider($http, new PsrCacheAdapter($storage));
 	$token = $client->getAccessToken(new Config('foo', 'bar'));
 
 	Assert::same('cached', $token->getAccessToken());
@@ -64,8 +66,9 @@ test('AccessTokenCacheProvider, test expire', function (): void {
 			new Response(200, [], '{"access_token":"token","expires_in":123,"token_type":"second","scope":"scope"}'),
 		);
 
-	$storage = new MemoryStorage();
-	$client = new AccessTokenCacheProvider($http, new Cache($storage));
+	$storage = new FileStorage(\Contributte\Tester\Environment::getTmpDir());
+	$storage->clean([Cache::All => true]);
+	$client = new AccessTokenCacheProvider($http, new PsrCacheAdapter($storage));
 	$config = new Config('foo', 'bar');
 
 	$token = $client->getAccessToken($config);
