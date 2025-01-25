@@ -16,17 +16,8 @@ abstract class AbstractClient
 
 	protected const BASE_URL = Config::URL . '/api/v1';
 
-	private Config $config;
-
-	private ClientInterface $client;
-
-	private IAccessTokenProvider $accessTokenProvider;
-
-	public function __construct(Config $config, ClientInterface $client, IAccessTokenProvider $accessTokenProvider)
+	public function __construct(private Config $config, private ClientInterface $client, private IAccessTokenProvider $accessTokenProvider)
 	{
-		$this->client = $client;
-		$this->config = $config;
-		$this->accessTokenProvider = $accessTokenProvider;
 	}
 
 	protected function doRequest(RequestInterface $request): ResponseInterface
