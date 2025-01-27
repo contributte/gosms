@@ -7,6 +7,7 @@ use Contributte\Gosms\Config;
 use Contributte\Gosms\Exception\ClientException;
 use Nette\Utils\Json;
 use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use stdClass;
@@ -16,14 +17,25 @@ abstract class AbstractClient
 
 	protected const BASE_URL = Config::URL . '/api/v1';
 
-	public function __construct(private Config $config, private ClientInterface $client, private IAccessTokenProvider $accessTokenProvider)
+	public function __construct(
+		private Config $config,
+		private ClientInterface $client,
+		private IAccessTokenProvider $accessTokenProvider,
+		private RequestFactoryInterface $requestFactory,
+	)
 	{
 	}
 
-	protected function doRequest(RequestInterface $request): ResponseInterface
+	/**
+	 * @param callable(RequestInterface): RequestInterface $callback
+	 */
+	protected function doRequest(string $method, string $uri, ?callable $callback = null): ResponseInterface
 	{
 		$token = $this->accessTokenProvider->getAccessToken($this->config);
-		$request = $request->withHeader('Authorization', 'Bearer ' . $token->getAccessToken());
+		$request = $this->requestFactory->createRequest($method, $uri);
+
+		$request = ($callback === null ? $request : $callback($request))
+			->withHeader('Authorization', 'Bearer ' . $token->getAccessToken());
 
 		return $this->client->sendRequest($request);
 	}

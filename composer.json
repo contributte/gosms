@@ -27,6 +27,7 @@
     "nette/caching": "^3.2.2",
     "nette/utils": "^3.2.9 || ^4.0.0",
     "psr/http-client": "^1.0",
+    "psr/http-factory": "^1.1",
     "psr/simple-cache": "^3.0"
   },
   "require-dev": {
