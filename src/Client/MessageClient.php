@@ -3,9 +3,10 @@
 namespace Contributte\Gosms\Client;
 
 use Contributte\Gosms\Entity\Message;
-use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Utils;
 use Nette\Utils\Json;
 use Nette\Utils\Strings;
+use Psr\Http\Message\RequestInterface;
 use stdClass;
 
 class MessageClient extends AbstractClient
@@ -15,10 +16,11 @@ class MessageClient extends AbstractClient
 
 	public function send(Message $message): stdClass
 	{
-		$body = Json::encode($message->toArray());
-
 		$response = $this->doRequest(
-			new Request('POST', self::BASE_MESSAGE_URL, ['Content-Type' => 'application/json'], $body)
+			'POST',
+			self::BASE_MESSAGE_URL,
+			fn (RequestInterface $request) => $request->withHeader('Content-Type', 'application/json')
+				->withBody(Utils::streamFor(Json::encode($message))),
 		);
 
 		$res = $this->decodeResponse($response, 201);
@@ -30,10 +32,11 @@ class MessageClient extends AbstractClient
 
 	public function test(Message $message): stdClass
 	{
-		$body = Json::encode($message->toArray());
-
 		$response = $this->doRequest(
-			new Request('POST', self::BASE_MESSAGE_URL . '/test', ['Content-Type' => 'application/json'], $body)
+			'POST',
+			self::BASE_MESSAGE_URL . '/test',
+			fn (RequestInterface $request) => $request->withHeader('Content-Type', 'application/json')
+				->withBody(Utils::streamFor(Json::encode($message))),
 		);
 
 		return $this->decodeResponse($response);
@@ -43,9 +46,7 @@ class MessageClient extends AbstractClient
 	{
 		$url = sprintf('%s/%d', self::BASE_MESSAGE_URL, $id);
 
-		$response = $this->doRequest(
-			new Request('GET', $url)
-		);
+		$response = $this->doRequest('GET', $url);
 
 		return $this->decodeResponse($response);
 	}
@@ -54,9 +55,7 @@ class MessageClient extends AbstractClient
 	{
 		$url = sprintf('%s/%d/replies', self::BASE_MESSAGE_URL, $id);
 
-		$response = $this->doRequest(
-			new Request('GET', $url)
-		);
+		$response = $this->doRequest('GET', $url);
 
 		return $this->decodeResponse($response);
 	}
@@ -65,9 +64,7 @@ class MessageClient extends AbstractClient
 	{
 		$url = sprintf('%s/%d', self::BASE_MESSAGE_URL, $id);
 
-		$response = $this->doRequest(
-			new Request('DELETE', $url)
-		);
+		$response = $this->doRequest('DELETE', $url);
 
 		$this->assertResponse($response);
 	}

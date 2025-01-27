@@ -7,12 +7,14 @@ use Contributte\Gosms\Client\AccountClient;
 use Contributte\Gosms\Client\MessageClient;
 use Contributte\Gosms\Config;
 use Contributte\Gosms\Http\GuzzletteClient;
+use GuzzleHttp\Psr7\HttpFactory;
 use Nette\Bridges\Psr\PsrCacheAdapter;
 use Nette\DI\CompilerExtension;
 use Nette\DI\Definitions\Statement;
 use Nette\Schema\Expect;
 use Nette\Schema\Schema;
 use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 use Psr\SimpleCache\CacheInterface;
 use stdClass;
 
@@ -80,6 +82,8 @@ class GoSmsExtension extends CompilerExtension
 		$config = $this->getConfig();
 
 		$builder = $this->getContainerBuilder();
+
+		// client
 		$client = $builder->getByType(ClientInterface::class);
 		if ($client === null) {
 			$builder
@@ -88,6 +92,13 @@ class GoSmsExtension extends CompilerExtension
 				->setAutowired(false);
 		} else {
 			$builder->addAlias($this->prefix('httpClient'), $client);
+		}
+
+		$clientFactory = $builder->getByType(RequestFactoryInterface::class);
+		if ($clientFactory === null) {
+			$builder
+				->addDefinition($this->prefix('httpClient.factory'))
+				->setFactory(HttpFactory::class);
 		}
 	}
 

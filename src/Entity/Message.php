@@ -4,7 +4,7 @@ namespace Contributte\Gosms\Entity;
 
 use DateTimeImmutable;
 
-class Message
+class Message implements \JsonSerializable
 {
 
 	private ?DateTimeImmutable $expectedSendStart = null;
@@ -45,9 +45,9 @@ class Message
 	}
 
 	/**
-	 * @return array<mixed>
+	 * @return array<string, mixed>
 	 */
-	public function toArray(): array
+	public function jsonSerialize(): mixed
 	{
 		$arr = [
 			'message' => $this->message,
