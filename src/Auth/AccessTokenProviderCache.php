@@ -4,18 +4,16 @@ namespace Contributte\Gosms\Auth;
 
 use Contributte\Gosms\Config;
 use Contributte\Gosms\Entity\AccessToken;
-use Psr\Http\Client\ClientInterface;
 use Psr\SimpleCache\CacheInterface;
 
-class AccessTokenCacheProvider extends AccessTokenClient
+final class AccessTokenProviderCache implements IAccessTokenProvider
 {
 
-	public function __construct(ClientInterface $client, protected CacheInterface $cache)
+	public function __construct(private IAccessTokenProvider $accessTokenClient, private CacheInterface $cache)
 	{
-		parent::__construct($client);
 	}
 
-	protected function generateAccessToken(Config $config): AccessToken
+	public function getAccessToken(Config $config): AccessToken
 	{
 		$key = 'Contributte/Gosms/' . $config->getClientId();
 
@@ -23,7 +21,7 @@ class AccessTokenCacheProvider extends AccessTokenClient
 		assert($accessToken instanceof AccessToken || $accessToken === null);
 
 		if ($accessToken === null) {
-			$accessToken = parent::generateAccessToken($config);
+			$accessToken = $this->accessTokenClient->getAccessToken($config);
 			$ttl = $accessToken->getExpiresAt() - AccessToken::PRE_FETCH_SECONDS - time();
 
 			$this->cache->set($key, $accessToken, $ttl);

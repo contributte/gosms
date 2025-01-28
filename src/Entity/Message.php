@@ -4,7 +4,7 @@ namespace Contributte\Gosms\Entity;
 
 use DateTimeImmutable;
 
-class Message implements \JsonSerializable
+final class Message implements \JsonSerializable
 {
 
 	private ?DateTimeImmutable $expectedSendStart = null;

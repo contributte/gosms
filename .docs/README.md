@@ -26,7 +26,11 @@ GoSMS.cz access tokens are valid for 3600 seconds. Default `AccessTokenCacheProv
 
 ```neon
 services:
-    my.http.client: GuzzleHttp\Client([timeout: 30, http_errors: false]) # define own client
+    my.http.client: GuzzleHttp\Client([timeout: 30, http_errors: false]) # define Psr\Http\Client\ClientInterface
+    my.http.request.factory: GuzzleHttp\Psr7\HttpFactory # define Psr\Http\Message\RequestFactoryInterface
+    my.psr16.cache: Nette\Bridges\Psr\PsrCacheAdapter # define Psr\SimpleCache\CacheInterface
+
+    # gosms.accessTokenProvider: my implementation of IAccessTokenProvider # (optional)
 
 extensions:
     # guzzlette: Contributte\Guzzlette\DI\GuzzleExtension # optional for default HTTP client (optional)
@@ -36,9 +40,6 @@ gosms:
     # Required
     clientId: 10185_2jz2pog5jtgkocs0oc0008kow8kkwsccsk8c8ogogggs44cskg
     clientSecret: caajrzi80zs4cwgg8400swwo8wgc4kook0s8s48kw8s00sgws
-
-    # Optional
-    accessTokenProvider: Contributte\Gosms\Auth\AccessTokenCacheProvider
 ```
 
 

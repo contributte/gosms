@@ -2,10 +2,11 @@
 
 namespace Contributte\Gosms;
 
-class Config
+final class Config
 {
 
 	public const URL = 'https://app.gosms.cz';
+	public const BASE_URL = self::URL . '/api/v1';
 
 	public function __construct(private string $clientId, private string $clientSecret)
 	{
