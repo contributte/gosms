@@ -5,8 +5,6 @@ namespace Tests\Cases\E2E;
 use Contributte\Gosms\Client\MessageClient;
 use Contributte\Gosms\DI\GoSmsExtension;
 use Contributte\Gosms\Entity\Message;
-use Contributte\Gosms\Exception\ClientException;
-use Contributte\Guzzlette\DI\GuzzleExtension;
 use Nette\Caching\Storages\MemoryStorage;
 use Nette\DI\Compiler;
 use Nette\DI\Container;
@@ -66,17 +64,14 @@ class SendSmsTest extends TestCase
 
 			sleep(2); // wait for send sms
 			$this->client->delete($messageId);
-			Assert::exception(function () use ($messageId): void {
-				$this->client->detail($messageId);
-			}, ClientException::class);
+			Assert::true($this->client->detail($messageId)->delivery->isDelivered);
 		}
 	}
 
 	private function createContainer(): Container
 	{
-		$loader = new ContainerLoader(TEMP_DIR, true);
+		$loader = new ContainerLoader(\Contributte\Tester\Environment::getTmpDir(), true);
 		$class = $loader->load(function (Compiler $compiler): void {
-			$compiler->addExtension('guz', new GuzzleExtension());
 			$compiler->addExtension('gosms', new GoSmsExtension())
 				->addConfig([
 					'services' => [
