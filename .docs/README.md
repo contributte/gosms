@@ -11,31 +11,34 @@
 
 Create account on GoSMS.cz and copy clientId and clientSecret from administration.
 
-If you use default HTTP client, you need to install and register [guzzlette](https://github.com/contributte/guzzlette/) extension.
+You need any PSR-18 client.
+- [guzzlette](https://github.com/contributte/guzzlette/) extension, has dependency on guzzle
+- guzzlehttp/guzzle `composer require guzzlehttp/guzzle`
+- symfony/http-client `composer require symfony/http-client`
 
 GoSMS.cz access tokens are valid for 3600 seconds. Default `AccessTokenCacheProvider` stores them in cache using [nette/caching](https://github.com/nette/caching);
 
 * **clientId**
 * **clientSecret**
-* **httpClient**
 * **accessTokenProvider**
-
 
 ## Installation
 
 ```neon
+services:
+    my.http.client: GuzzleHttp\Client([timeout: 30, http_errors: false]) # define own client
+
 extensions:
-	guzzlette: Contributte\Guzzlette\DI\GuzzleExtension # optional for default HTTP client
-	gosms: Contributte\Gosms\DI\GoSmsExtension
+    # guzzlette: Contributte\Guzzlette\DI\GuzzleExtension # optional for default HTTP client (optional)
+    gosms: Contributte\Gosms\DI\GoSmsExtension
 
 gosms:
-	# Required
-	clientId: 10185_2jz2pog5jtgkocs0oc0008kow8kkwsccsk8c8ogogggs44cskg
-	clientSecret: caajrzi80zs4cwgg8400swwo8wgc4kook0s8s48kw8s00sgws
+    # Required
+    clientId: 10185_2jz2pog5jtgkocs0oc0008kow8kkwsccsk8c8ogogggs44cskg
+    clientSecret: caajrzi80zs4cwgg8400swwo8wgc4kook0s8s48kw8s00sgws
 
-	# Optional
-	httpClient: Contributte\Gosms\Http\GuzzletteClient
-	accessTokenProvider: Contributte\Gosms\Auth\AccessTokenCacheProvider
+    # Optional
+    accessTokenProvider: Contributte\Gosms\Auth\AccessTokenCacheProvider
 ```
 
 

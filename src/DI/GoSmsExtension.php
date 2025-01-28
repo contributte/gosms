@@ -6,7 +6,8 @@ use Contributte\Gosms\Auth\AccessTokenCacheProvider;
 use Contributte\Gosms\Client\AccountClient;
 use Contributte\Gosms\Client\MessageClient;
 use Contributte\Gosms\Config;
-use Contributte\Gosms\Http\GuzzletteClient;
+use Contributte\Gosms\Exception\MissingClientException;
+use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\HttpFactory;
 use Nette\Bridges\Psr\PsrCacheAdapter;
 use Nette\DI\CompilerExtension;
@@ -29,7 +30,6 @@ class GoSmsExtension extends CompilerExtension
 		return Expect::structure([
 			'clientId' => Expect::string()->required(),
 			'clientSecret' => Expect::string()->required(),
-			'httpClient' => Expect::anyOf(Expect::string(), Expect::array(), Expect::type(Statement::class)),
 			'accessTokenProvider' => Expect::anyOf(Expect::string(), Expect::array(), Expect::type(Statement::class)),
 		]);
 	}
@@ -51,12 +51,12 @@ class GoSmsExtension extends CompilerExtension
 		// Message client
 		$builder
 			->addDefinition($this->prefix('message'))
-			->setFactory(MessageClient::class, [$this->prefix('@config')]);
+			->setFactory(MessageClient::class, [$this->prefix('@config'), $this->prefix('@httpClient')]);
 
 		// Account client
 		$builder
 			->addDefinition($this->prefix('account'))
-			->setFactory(AccountClient::class, [$this->prefix('@config')]);
+			->setFactory(AccountClient::class, [$this->prefix('@config'), $this->prefix('@httpClient')]);
 
 		// Access token
 		$accessTokenProvider = $config->accessTokenProvider;
@@ -67,7 +67,10 @@ class GoSmsExtension extends CompilerExtension
 				->setFactory(PsrCacheAdapter::class)
 				->setAutowired(false);
 
-			$accessTokenProvider = new Statement(AccessTokenCacheProvider::class, [$this->prefix('@httpClient'), $this->prefix('@cache')]);
+			$accessTokenProvider = new Statement(AccessTokenCacheProvider::class, [
+				$this->prefix('@httpClient'),
+				$this->prefix('@cache'),
+			]);
 		}
 
 		$this->compiler->loadDefinitionsFromConfig([
@@ -79,16 +82,18 @@ class GoSmsExtension extends CompilerExtension
 	{
 		parent::beforeCompile();
 
-		$config = $this->getConfig();
-
 		$builder = $this->getContainerBuilder();
 
 		// client
 		$client = $builder->getByType(ClientInterface::class);
 		if ($client === null) {
+			$httpClient = class_exists(Client::class)
+				? Client::class
+				: throw new MissingClientException('Install any psr-18 client and register.');
+
 			$builder
 				->addDefinition($this->prefix('httpClient'))
-				->setFactory($config->httpClient ?? GuzzletteClient::class)
+				->setFactory($httpClient)
 				->setAutowired(false);
 		} else {
 			$builder->addAlias($this->prefix('httpClient'), $client);
