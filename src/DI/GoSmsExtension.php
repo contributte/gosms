@@ -2,6 +2,7 @@
 
 namespace Contributte\Gosms\DI;
 
+use Contributte\Gosms\Api\GoSmsApi;
 use Contributte\Gosms\Auth\AccessTokenProvider;
 use Contributte\Gosms\Auth\AccessTokenProviderCache;
 use Contributte\Gosms\Client\AccountClient;
@@ -41,8 +42,16 @@ class GoSmsExtension extends CompilerExtension
 			])
 			->setAutowired(false);
 
+		$builder->addDefinition($this->prefix('gosms.api'))
+			->setFactory(GoSmsApi::class, [
+				$this->prefix('@accessTokenProvider'),
+				$this->prefix('@client'),
+			])
+			->setAutowired(false);
+
 		// Client
-		$builder->addDefinition($this->prefix('client'))
+		$builder
+			->addDefinition($this->prefix('client'))
 			->setFactory(Client::class)
 			->setAutowired(false);
 
@@ -50,8 +59,7 @@ class GoSmsExtension extends CompilerExtension
 		$builder
 			->addDefinition($this->prefix('message'))
 			->setFactory(MessageClient::class, [
-				$this->prefix('@accessTokenProvider'),
-				$this->prefix('@client'),
+				$this->prefix('@gosms.api'),
 				$this->prefix('@config'),
 			]);
 
@@ -59,20 +67,21 @@ class GoSmsExtension extends CompilerExtension
 		$builder
 			->addDefinition($this->prefix('account'))
 			->setFactory(AccountClient::class, [
-				$this->prefix('@accessTokenProvider'),
-				$this->prefix('@client'),
+				$this->prefix('@gosms.api'),
 				$this->prefix('@config'),
 			]);
 
 		// Access token provider
-		$builder->addDefinition($this->prefix('access.token.provider.source'))
+		$builder
+			->addDefinition($this->prefix('access.token.provider.source'))
 			->setFactory(AccessTokenProvider::class, [
 				$this->prefix('@client'),
 			])
 			->setAutowired(false);
 
 		// Access token provider cache
-		$builder->addDefinition($this->prefix('accessTokenProvider'))
+		$builder
+			->addDefinition($this->prefix('accessTokenProvider'))
 			->setFactory(AccessTokenProviderCache::class, [$this->prefix('@access.token.provider.source')])
 			->setAutowired(false);
 	}
