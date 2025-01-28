@@ -34,7 +34,7 @@ final class Client
 	): stdClass
 	{
 		$request = $this->createRequest($uri, $accessToken, $method, $body);
-		$response = $this->client->sendRequest($request);
+		$response = $this->client->sendRequest($request->withHeader('X-Powered-By', 'contributte/gosms'));
 
 		return $this->decodeResponse($response, $code);
 	}

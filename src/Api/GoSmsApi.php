@@ -12,7 +12,7 @@ use stdClass;
 final class GoSmsApi
 {
 
-	private const BASE_MESSAGE_URL = Config::BASE_URL . '/messages';
+	private const BASE_MESSAGE_URL = Config::URL_API . '/messages';
 
 	public function __construct(
 		private IAccessTokenProvider $accessTokenProvider,
@@ -51,7 +51,7 @@ final class GoSmsApi
 
 	public function accountDetail(Config $config): stdClass
 	{
-		return $this->client->json(Config::BASE_URL . '/', $this->getAccessToken($config));
+		return $this->client->json(Config::URL_API . '/', $this->getAccessToken($config));
 	}
 
 	private function getAccessToken(Config $config): string
