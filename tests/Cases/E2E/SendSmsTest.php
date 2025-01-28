@@ -2,15 +2,21 @@
 
 namespace Tests\Cases\E2E;
 
+use Contributte\Gosms\Client\AccountClient;
 use Contributte\Gosms\Client\MessageClient;
 use Contributte\Gosms\DI\GoSmsExtension;
 use Contributte\Gosms\Entity\Message;
+use Contributte\Gosms\Exception\ClientException;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\HttpFactory;
+use Nette\Bridges\Psr\PsrCacheAdapter;
 use Nette\Caching\Storages\MemoryStorage;
 use Nette\DI\Compiler;
 use Nette\DI\Container;
 use Nette\DI\ContainerLoader;
 use Nette\Neon\Neon;
 use Nette\Utils\Validators;
+use stdClass;
 use Tester\Assert;
 use Tester\Environment;
 use Tester\TestCase;
@@ -21,6 +27,8 @@ class SendSmsTest extends TestCase
 {
 
 	private MessageClient $client;
+
+	private AccountClient $accountClient;
 
 	/** @var mixed[] */
 	private array $config = [];
@@ -42,7 +50,10 @@ class SendSmsTest extends TestCase
 		$container = $this->createContainer();
 		$messageClient = $container->getService('gosms.message');
 		assert($messageClient instanceof MessageClient);
+		$accountClient = $container->getService('gosms.account');
+		assert($accountClient instanceof AccountClient);
 		$this->client = $messageClient;
+		$this->accountClient = $accountClient;
 	}
 
 	public function testClient(): void
@@ -50,6 +61,9 @@ class SendSmsTest extends TestCase
 		$message = new Message('Automatic test message', [$this->config['phone']], $this->config['channel']);
 		$response = $this->client->test($message);
 		Assert::same('CONCEPT', $response->sendingInfo->status);
+
+		$data = $this->accountClient->detail();
+		Assert::type(stdClass::class, $data);
 
 		if ($this->config['sendSms'] === true) {
 			$response = $this->client->send($message);
@@ -64,7 +78,9 @@ class SendSmsTest extends TestCase
 
 			sleep(2); // wait for send sms
 			$this->client->delete($messageId);
-			Assert::true($this->client->detail($messageId)->delivery->isDelivered);
+			Assert::exception(function () use ($messageId): void {
+				$this->client->detail($messageId);
+			}, ClientException::class);
 		}
 	}
 
@@ -75,7 +91,10 @@ class SendSmsTest extends TestCase
 			$compiler->addExtension('gosms', new GoSmsExtension())
 				->addConfig([
 					'services' => [
+						'http.client' => Client::class,
+						'http.factory' => HttpFactory::class,
 						'storage' => MemoryStorage::class,
+						'cache' => PsrCacheAdapter::class,
 					],
 					'gosms' => [
 						'clientId' => $this->config['clientId'],

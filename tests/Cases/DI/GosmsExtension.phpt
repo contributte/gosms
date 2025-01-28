@@ -1,11 +1,14 @@
 <?php declare(strict_types = 1);
 
-use Contributte\Gosms\Auth\AccessTokenClient;
+use Contributte\Gosms\Auth\AccessTokenProvider;
 use Contributte\Gosms\Client\AccountClient;
 use Contributte\Gosms\Client\MessageClient;
 use Contributte\Gosms\DI\GoSmsExtension;
 use Contributte\Tester\Environment;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\HttpFactory;
 use Nette\Bridges\CacheDI\CacheExtension;
+use Nette\Bridges\Psr\PsrCacheAdapter;
 use Nette\DI\Compiler;
 use Nette\DI\Container;
 use Nette\DI\ContainerLoader;
@@ -20,6 +23,11 @@ test('Build container minimum', function (): void {
 		$compiler->addExtension('caching', new CacheExtension(Environment::getTmpDir()));
 		$compiler->addExtension('gosms', new GoSmsExtension())
 			->addConfig([
+				'services' => [
+					'http.client' => Client::class,
+					'http.factory' => HttpFactory::class,
+					'cache.psr' => PsrCacheAdapter::class,
+				],
 				'gosms' => [
 					'clientId' => 'X',
 					'clientSecret' => 'Y',
@@ -40,11 +48,14 @@ test('Build container maximum', function (): void {
 	$class = $loader->load(function (Compiler $compiler): void {
 		$compiler->addExtension('gosms', new GoSmsExtension())
 			->addConfig([
+				'services' => [
+					'http.client' => Client::class,
+					'http.factory' => HttpFactory::class,
+					'gosms.accessTokenProvider' => AccessTokenProvider::class,
+				],
 				'gosms' => [
 					'clientId' => 'X',
 					'clientSecret' => 'Y',
-					'httpClient' => GuzzletteClient::class,
-					'accessTokenProvider' => ['type' => AccessTokenClient::class],
 				],
 			]);
 	}, 1);

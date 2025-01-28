@@ -23,20 +23,6 @@ final class AccessToken
 		$this->expiresAt = $expiresAt ?? time() + $expiresIn;
 	}
 
-	/**
-	 * @param SourceType $data
-	 */
-	public static function fromArray(array $data): self
-	{
-		return new self(
-			$data['access_token'],
-			$data['expires_in'],
-			$data['token_type'],
-			$data['scope'],
-			$data['expires_at'] ?? null
-		);
-	}
-
 	public function isExpired(): bool
 	{
 		return $this->expiresAt - self::PRE_FETCH_SECONDS < time();

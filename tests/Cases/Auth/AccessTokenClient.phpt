@@ -1,8 +1,9 @@
 <?php declare(strict_types = 1);
 
-use Contributte\Gosms\Auth\AccessTokenClient;
+use Contributte\Gosms\Auth\AccessTokenProvider;
 use Contributte\Gosms\Config;
-use Contributte\Gosms\Entity\AccessToken;
+use Contributte\Gosms\Http\Client;
+use GuzzleHttp\Psr7\HttpFactory;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Client\ClientInterface;
 use Tester\Assert;
@@ -16,19 +17,14 @@ Environment::bypassFinals();
 test('AccessTokenClient', function (): void {
 	$http = Mockery::mock(ClientInterface::class);
 	$http->shouldReceive('sendRequest')
-		->andReturn(new Response(200, [], '{"access_token":"token","expires_in":123,"token_type":"type","scope":"scope"}'));
+		->andReturn(new Response(200, [], '{"access_token":"token","expires_in":30,"token_type":"type","scope":"scope"}'));
 
-	$client = new AccessTokenClient($http);
-	Closure::fromCallable(function (): void {
-		$this->accessToken = Mockery::mock(AccessToken::class);
-		$this->accessToken->shouldReceive('isExpired')
-			->andReturn(true);
-	})->call($client);
+	$client = new AccessTokenProvider(new Client($http, new HttpFactory()));
 
 	$token = $client->getAccessToken(new Config('foo', 'bar'));
 
 	Assert::same('token', $token->getAccessToken());
-	Assert::same(123, $token->getExpiresIn());
+	Assert::same(30, $token->getExpiresIn());
 	Assert::same('type', $token->getTokenType());
 	Assert::same('scope', $token->getScope());
 });

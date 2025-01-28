@@ -2,71 +2,57 @@
 
 namespace Contributte\Gosms\Client;
 
+use Contributte\Gosms\Auth\IAccessTokenProvider;
+use Contributte\Gosms\Config;
 use Contributte\Gosms\Entity\Message;
-use GuzzleHttp\Psr7\Utils;
-use Nette\Utils\Json;
+use Contributte\Gosms\Http\Client;
 use Nette\Utils\Strings;
-use Psr\Http\Message\RequestInterface;
 use stdClass;
 
-class MessageClient extends AbstractClient
+final class MessageClient
 {
 
-	protected const BASE_MESSAGE_URL = self::BASE_URL . '/messages';
+	private const BASE_MESSAGE_URL = Config::BASE_URL . '/messages';
+
+	public function __construct(
+		private IAccessTokenProvider $accessTokenProvider,
+		private Client $client,
+		private Config $config,
+	)
+	{
+	}
 
 	public function send(Message $message): stdClass
 	{
-		$response = $this->doRequest(
-			'POST',
-			self::BASE_MESSAGE_URL,
-			fn (RequestInterface $request) => $request->withHeader('Content-Type', 'application/json')
-				->withBody(Utils::streamFor(Json::encode($message))),
-		);
+		$response = $this->client->json(self::BASE_MESSAGE_URL, $this->getAccessToken(), 'POST', $message, 201);
+		$response->parsedId = str_replace('messages/', '', Strings::match($response->link, '~messages/\d+~')[0] ?? '');
 
-		$res = $this->decodeResponse($response, 201);
-
-		$res->parsedId = str_replace('messages/', '', Strings::match($res->link, '~messages/\d+~')[0] ?? '');
-
-		return $res;
+		return $response;
 	}
 
 	public function test(Message $message): stdClass
 	{
-		$response = $this->doRequest(
-			'POST',
-			self::BASE_MESSAGE_URL . '/test',
-			fn (RequestInterface $request) => $request->withHeader('Content-Type', 'application/json')
-				->withBody(Utils::streamFor(Json::encode($message))),
-		);
-
-		return $this->decodeResponse($response);
+		return $this->client->json(self::BASE_MESSAGE_URL . '/test', $this->getAccessToken(), 'POST', $message);
 	}
 
 	public function detail(string $id): stdClass
 	{
-		$url = sprintf('%s/%d', self::BASE_MESSAGE_URL, $id);
-
-		$response = $this->doRequest('GET', $url);
-
-		return $this->decodeResponse($response);
+		return $this->client->json(sprintf('%s/%d', self::BASE_MESSAGE_URL, $id), $this->getAccessToken());
 	}
 
 	public function replies(string $id): stdClass
 	{
-		$url = sprintf('%s/%d/replies', self::BASE_MESSAGE_URL, $id);
-
-		$response = $this->doRequest('GET', $url);
-
-		return $this->decodeResponse($response);
+		return $this->client->json(sprintf('%s/%d/replies', self::BASE_MESSAGE_URL, $id), $this->getAccessToken());
 	}
 
-	public function delete(string $id): void
+	public function delete(string $id): stdClass
 	{
-		$url = sprintf('%s/%d', self::BASE_MESSAGE_URL, $id);
+		return $this->client->json(sprintf('%s/%d', self::BASE_MESSAGE_URL, $id), $this->getAccessToken(), 'DELETE');
+	}
 
-		$response = $this->doRequest('DELETE', $url);
-
-		$this->assertResponse($response);
+	private function getAccessToken(): string
+	{
+		return $this->accessTokenProvider->getAccessToken($this->config)->getAccessToken();
 	}
 
 }

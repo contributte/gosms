@@ -2,7 +2,7 @@
 
 namespace Contributte\Gosms\Exception;
 
-class ClientException extends RuntimeException
+final class ClientException extends RuntimeException
 {
 
 }
