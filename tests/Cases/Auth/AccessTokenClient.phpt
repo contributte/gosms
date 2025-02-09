@@ -3,18 +3,16 @@
 use Contributte\Gosms\Auth\AccessTokenProvider;
 use Contributte\Gosms\Config;
 use Contributte\Gosms\Http\Client;
+use Contributte\Tester\Toolkit;
 use GuzzleHttp\Psr7\HttpFactory;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Client\ClientInterface;
 use Tester\Assert;
-use Tester\Environment;
 
 require_once __DIR__ . '/../../bootstrap.php';
 
-Environment::bypassFinals();
-
 // Check client creates token and requests a new one when saved is expired
-test('AccessTokenClient', function (): void {
+Toolkit::test(function (): void {
 	$http = Mockery::mock(ClientInterface::class);
 	$http->shouldReceive('sendRequest')
 		->andReturn(new Response(200, [], '{"access_token":"token","expires_in":30,"token_type":"type","scope":"scope"}'));

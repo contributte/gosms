@@ -1,11 +1,12 @@
 <?php declare(strict_types = 1);
 
 use Contributte\Gosms\Entity\AccessToken;
+use Contributte\Tester\Toolkit;
 use Tester\Assert;
 
 require_once __DIR__ . '/../../bootstrap.php';
 
-test('AccessToken with expiration', function (): void {
+Toolkit::test(function (): void {
 	Assert::true(
 		(new AccessToken('foo', 29, 'asdf', 'scope'))->isExpired(),
 	);
