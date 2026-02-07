@@ -30,10 +30,10 @@
     "psr/simple-cache": "^3.0.0"
   },
   "require-dev": {
-    "contributte/qa": "^0.4.0",
-    "contributte/tester": "^0.3.0",
-    "contributte/phpstan": "^0.2.0",
-    "guzzlehttp/guzzle": "^7.9",
+    "contributte/phpstan": "~0.2.0",
+    "contributte/qa": "~0.4.0",
+    "contributte/tester": "~0.3.0",
+    "guzzlehttp/guzzle": "^7.9.0",
     "mockery/mockery": "^1.6.12",
     "nette/di": "^3.2.4"
   },
