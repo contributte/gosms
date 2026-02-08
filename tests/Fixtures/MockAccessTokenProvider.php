@@ -13,7 +13,10 @@ final class MockAccessTokenProvider implements IAccessTokenProvider
 
 	public function getAccessToken(Config $config): AccessToken
 	{
-		return new AccessToken($this->token++, 31, 'type', 'scope');
+		$token = $this->token;
+		$this->token = chr(ord($this->token) + 1);
+
+		return new AccessToken($token, 31, 'type', 'scope');
 	}
 
 }
