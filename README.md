@@ -116,7 +116,7 @@ use Contributte\Gosms\Client\MessageClient;
 use Contributte\Gosms\Entity\Message;
 use Contributte\Gosms\Exception\ClientException;
 
-final class SendPaymentsControl extends BaseControl
+final class SendSmsControl extends BaseControl
 {
 
 	/** @var MessageClient */
@@ -160,7 +160,7 @@ We have two built-in access token providers:
 
 See [how to contribute](https://contributte.org/contributing.html) to this package.
 
-This package is currently maintaining by these authors.
+This package is currently maintained by these authors.
 
 <a href="https://github.com/f3l1x">
   <img width="80" height="80" src="https://avatars2.githubusercontent.com/u/538058?v=3&s=80">
